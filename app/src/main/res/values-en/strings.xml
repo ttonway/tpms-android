@@ -1,0 +1,16 @@
+<resources>
+
+    <string name="tab_monitor">Monitor</string>
+    <string name="tab_learn">Tire\nMatch</string>
+    <string name="tab_exchange">Tire\nExchange</string>
+    <string name="tab_setting">Setting</string>
+    <string name="btn_voice">Sound</string>
+
+    <string name="label_language">Language</string>
+    <string name="label_unit">Pressure Unit</string>
+    <string name="label_degree">Temp Unit</string>
+    <string name="label_pressure_max">Pressure Alarm\nUpper Limit</string>
+    <string name="label_pressure_min">Pressure Alarm\nLower Limit</string>
+    <string name="label_temperature_max">Temperature\nAlarm Upper</string>
+
+</resources>

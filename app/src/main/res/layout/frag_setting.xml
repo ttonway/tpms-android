@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <RadioGroup
+            android:id="@+id/group_language"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                android:minWidth="80dp"
+                android:text="@string/label_language"
+                android:textColor="@color/text_green"
+                android:textSize="14sp" />
+
+            <RadioButton
+                android:id="@+id/language_simplified_chinese"
+                style="@style/RadioButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/language_simplified_chinese" />
+
+            <RadioButton
+                android:id="@+id/language_traditional_chinese"
+                style="@style/RadioButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/language_traditional_chinese" />
+
+            <RadioButton
+                android:id="@+id/language_english"
+                style="@style/RadioButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/language_english" />
+        </RadioGroup>
+
+        <RadioGroup
+            android:id="@+id/group_pressure_unit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                android:minWidth="80dp"
+                android:text="@string/label_unit"
+                android:textColor="@color/text_green"
+                android:textSize="14sp" />
+
+            <RadioButton
+                android:id="@+id/unit_bar"
+                style="@style/RadioButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/unit_bar" />
+
+            <RadioButton
+                android:id="@+id/unit_psi"
+                style="@style/RadioButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/unit_psi" />
+
+            <RadioButton
+                android:id="@+id/unit_kpa"
+                style="@style/RadioButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/unit_kpa" />
+
+            <RadioButton
+                android:id="@+id/unit_kg"
+                style="@style/RadioButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/unit_kg" />
+        </RadioGroup>
+
+        <RadioGroup
+            android:id="@+id/group_temp_unit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                android:minWidth="80dp"
+                android:text="@string/label_degree"
+                android:textColor="@color/text_green"
+                android:textSize="14sp" />
+
+            <RadioButton
+                android:id="@+id/degree_celsius"
+                style="@style/RadioButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/degree_celsius" />
+
+            <RadioButton
+                android:id="@+id/degree_fahrenheit"
+                style="@style/RadioButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/degree_fahrenheit" />
+        </RadioGroup>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:paddingTop="16dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                android:minWidth="80dp"
+                android:text="@string/label_pressure_max"
+                android:textColor="@color/text_green"
+                android:textSize="14sp" />
+
+            <io.techery.progresshint.addition.widget.SeekBar
+                android:id="@+id/pressure_upper_limit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:maxHeight="30dp"
+                android:minHeight="30dp"
+                android:progressDrawable="@drawable/seekbar_progress"
+                android:thumb="@drawable/seekbar_thumb"
+                app:popupAlwaysShown="true"
+                app:popupAnimationStyle="@style/SeekBarHintPopupAnimation"
+                app:popupLayout="@layout/popup_layout"
+                app:popupStyle="follow" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:paddingTop="16dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                android:minWidth="80dp"
+                android:text="@string/label_pressure_min"
+                android:textColor="@color/text_green"
+                android:textSize="14sp" />
+
+            <io.techery.progresshint.addition.widget.SeekBar
+                android:id="@+id/pressure_lower_limit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:maxHeight="30dp"
+                android:minHeight="30dp"
+                android:progressDrawable="@drawable/seekbar_progress"
+                android:thumb="@drawable/seekbar_thumb"
+                app:popupAlwaysShown="true"
+                app:popupAnimationStyle="@style/SeekBarHintPopupAnimation"
+                app:popupLayout="@layout/popup_layout"
+                app:popupStyle="follow" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:paddingTop="16dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                android:minWidth="80dp"
+                android:text="@string/label_temperature_max"
+                android:textColor="@color/text_green"
+                android:textSize="14sp" />
+
+            <io.techery.progresshint.addition.widget.SeekBar
+                android:id="@+id/temp_upper_limit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:maxHeight="30dp"
+                android:minHeight="30dp"
+                android:progressDrawable="@drawable/seekbar_progress"
+                android:thumb="@drawable/seekbar_thumb"
+                app:popupAlwaysShown="true"
+                app:popupAnimationStyle="@style/SeekBarHintPopupAnimation"
+                app:popupLayout="@layout/popup_layout"
+                app:popupStyle="follow" />
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>

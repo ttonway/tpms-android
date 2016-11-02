@@ -1,0 +1,27 @@
+<resources>
+    <string name="app_name">TPMS</string>
+
+    <string name="tab_monitor">监控</string>
+    <string name="tab_learn">学习</string>
+    <string name="tab_exchange">交换</string>
+    <string name="tab_setting">设置</string>
+    <string name="btn_voice">声音</string>
+
+    <string name="label_language">语言</string>
+    <string name="label_unit">压力单位</string>
+    <string name="label_degree">温度单位</string>
+    <string name="label_pressure_max">压力报警上限</string>
+    <string name="label_pressure_min">压力报警下限</string>
+    <string name="label_temperature_max">温度报警上限</string>
+
+    <string name="language_simplified_chinese">中文简体</string>
+    <string name="language_traditional_chinese">中文繁體</string>
+    <string name="language_english">English</string>
+    <string name="unit_bar">Bar</string>
+    <string name="unit_psi">PSI</string>
+    <string name="unit_kpa">Kpa</string>
+    <string name="unit_kg">Kg</string>
+    <string name="degree_celsius">℃</string>
+    <string name="degree_fahrenheit">℉</string>
+
+</resources>
