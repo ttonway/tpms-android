@@ -119,7 +119,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:drawableTop="@drawable/ic_voice"
-                    android:text="@string/btn_voice" />
+                    android:text="@string/btn_voice"
+                    android:textColor="@color/text_white" />
             </FrameLayout>
 
             <View

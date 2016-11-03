@@ -23,6 +23,7 @@ import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
@@ -119,6 +120,11 @@ public class MainActivity extends AppCompatActivity {
                 parent.setSelected(false);
             }
         }
+    }
+
+    @OnClick(R.id.btn_voice)
+    void toggleVoice() {
+        mVoiceBtn.setSelected(!mVoiceBtn.isSelected());
     }
 
 

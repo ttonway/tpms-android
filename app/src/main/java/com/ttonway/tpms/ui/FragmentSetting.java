@@ -1,6 +1,5 @@
 package com.ttonway.tpms.ui;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.Resources;
@@ -8,7 +7,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +14,7 @@ import android.widget.RadioGroup;
 
 import com.ttonway.tpms.R;
 import com.ttonway.tpms.SPManager;
+import com.ttonway.tpms.utils.Utils;
 
 import java.util.Locale;
 
@@ -180,7 +179,7 @@ public class FragmentSetting extends Fragment {
                     @Override
                     public String getHint(android.widget.SeekBar seekBar, int progress) {
                         float bar = SPManager.PRESSURE_UPPER_LIMIT_MIN + (float) progress / 100 * SPManager.PRESSURE_UPPER_LIMIT_RANGE;
-                        return formatPressure(getActivity(), bar);
+                        return Utils.formatPressure(getActivity(), bar);
                     }
                 });
         mSeekBarLowerLimit.getHintDelegate()
@@ -188,7 +187,7 @@ public class FragmentSetting extends Fragment {
                     @Override
                     public String getHint(android.widget.SeekBar seekBar, int progress) {
                         float bar = SPManager.PRESSURE_LOWER_LIMIT_MIN + (float) progress / 100 * SPManager.PRESSURE_LOWER_LIMIT_RANGE;
-                        return formatPressure(getActivity(), bar);
+                        return Utils.formatPressure(getActivity(), bar);
                     }
                 });
         mSeekBarTempUpperLimit.getHintDelegate()
@@ -196,7 +195,7 @@ public class FragmentSetting extends Fragment {
                     @Override
                     public String getHint(android.widget.SeekBar seekBar, int progress) {
                         int degree = (int) (SPManager.TEMP_UPPER_LIMIT_MIN + (float) progress / 100 * SPManager.TEMP_UPPER_LIMIT_RANGE + .5f);
-                        return formatTemperature(getActivity(), degree);
+                        return Utils.formatTemperature(getActivity(), degree);
                     }
                 });
     }
@@ -217,32 +216,5 @@ public class FragmentSetting extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         mUnbinder.unbind();
-    }
-
-    public static String formatPressure(Context context, float bar) {
-        int unit = SPManager.getInt(context, SPManager.KEY_PRESSURE_UNIT, SPManager.UNIT_BAR);
-        switch (unit) {
-            case SPManager.UNIT_BAR:
-                return String.format("%.1f%s", bar, context.getString(R.string.unit_bar));
-            case SPManager.UNIT_PSI:
-                return String.format("%.1f%s", (bar / 14.5f), context.getString(R.string.unit_psi));
-            case SPManager.UNIT_KPA:
-                return String.format("%.1f%s", (bar - 100) / 100, context.getString(R.string.unit_kpa));
-            case SPManager.UNIT_KG:
-                return String.format("%.1f%s", bar, context.getString(R.string.unit_kg));
-        }
-        return null;
-    }
-
-    public static String formatTemperature(Context context, int celsiusDegree) {
-        int unit = SPManager.getInt(context, SPManager.KEY_TEMP_UNIT, SPManager.TEMP_UNIT_CELSIUS);
-        switch (unit) {
-            case SPManager.TEMP_UNIT_CELSIUS:
-                return String.format("%d%s", celsiusDegree, context.getString(R.string.degree_celsius));
-            case SPManager.TEMP_UNIT_FAHRENHEIT:
-                // 摄氏度×9/5+32=华氏度
-                return String.format("%d%s", (celsiusDegree * 9 / 5 + 32), context.getString(R.string.degree_fahrenheit));
-        }
-        return null;
     }
 }

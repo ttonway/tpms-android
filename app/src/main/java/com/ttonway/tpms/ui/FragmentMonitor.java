@@ -11,6 +11,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.ttonway.tpms.R;
+import com.ttonway.tpms.utils.Utils;
 
 import java.util.List;
 
@@ -50,5 +51,17 @@ public class FragmentMonitor extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         mUnbinder.unbind();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        for (TextView textView : mPressureTextViews) {
+            textView.setText(Utils.formatPressure(getActivity(), 0.f));
+        }
+        for (TextView textView : mTempTextViews) {
+            textView.setText(Utils.formatTemperature(getActivity(), 0));
+        }
     }
 }

@@ -5,7 +5,17 @@
     <string name="tab_learn">学习</string>
     <string name="tab_exchange">交换</string>
     <string name="tab_setting">设置</string>
+    <string name="btn_ok">确定</string>
+    <string name="btn_cancel">取消</string>
     <string name="btn_voice">声音</string>
+    <string name="btn_tire1">左前轮</string>
+    <string name="btn_tire2">左后轮</string>
+    <string name="btn_tire3">右前轮</string>
+    <string name="btn_tire4">右后轮</string>
+    <string name="btn_tire1_match">左前轮学习</string>
+    <string name="btn_tire2_match">左后轮学习</string>
+    <string name="btn_tire3_match">右前轮学习</string>
+    <string name="btn_tire4_match">右后轮学习</string>
 
     <string name="label_language">语言</string>
     <string name="label_unit">压力单位</string>
@@ -13,6 +23,8 @@
     <string name="label_pressure_max">压力报警上限</string>
     <string name="label_pressure_min">压力报警下限</string>
     <string name="label_temperature_max">温度报警上限</string>
+
+    <string name="alert_message_exchange">是否交换%1$s和%2$s</string>
 
     <string name="language_simplified_chinese">中文简体</string>
     <string name="language_traditional_chinese">中文繁體</string>
