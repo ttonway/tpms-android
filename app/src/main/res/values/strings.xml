@@ -24,6 +24,9 @@
     <string name="label_pressure_min">压力报警下限</string>
     <string name="label_temperature_max">温度报警上限</string>
 
+    <string name="alert_message_usb_host_unavailable">您的手机不支持USB HOST，请更换其他手机再试</string>
+    <string name="alert_message_usb_io_error">主机连接错误</string>
+    <string name="alert_message_learn">胎压学习搜索中%1$s</string>
     <string name="alert_message_exchange">是否交换%1$s和%2$s</string>
 
     <string name="language_simplified_chinese">中文简体</string>

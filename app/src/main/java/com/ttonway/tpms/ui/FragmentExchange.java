@@ -19,6 +19,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.ttonway.tpms.R;
+import com.ttonway.tpms.usb.TpmsDevice;
 
 import java.util.List;
 
@@ -30,7 +31,7 @@ import butterknife.Unbinder;
 /**
  * Created by ttonway on 2016/10/29.
  */
-public class FragmentExchange extends Fragment {
+public class FragmentExchange extends BaseFragment {
 
     @BindViews({R.id.board1, R.id.board3, R.id.board4, R.id.board2})
     List<LinearLayout> mBoards;
@@ -86,6 +87,17 @@ public class FragmentExchange extends Fragment {
         mImageViews.get(index).setVisibility(selected ? View.VISIBLE : View.GONE);
     }
 
+    public void exchangeTire() {
+        byte tire1 = getTireIndex(mSelectedBorad1);
+        byte tire2 = getTireIndex(mSelectedBorad2);
+        if (tire1 != TpmsDevice.TIRE_NONE && tire2 != TpmsDevice.TIRE_NONE) {
+            TpmsDevice device = getTpmeDevice();
+            if (device != null) {
+                device.exchangeTire(tire1, tire2);
+            }
+        }
+    }
+
     @OnClick({R.id.board1, R.id.board3, R.id.board4, R.id.board2})
     void onClickTire(LinearLayout board) {
         boolean selected = !board.isSelected();
@@ -133,6 +145,21 @@ public class FragmentExchange extends Fragment {
                 return getString(R.string.btn_tire4);
             default:
                 return null;
+        }
+    }
+
+    public static byte getTireIndex(int boardId) {
+        switch (boardId) {
+            case R.id.board1:
+                return TpmsDevice.TIRE_LEFT_FRONT;
+            case R.id.board2:
+                return TpmsDevice.TIRE_LEFT_END;
+            case R.id.board3:
+                return TpmsDevice.TIRE_RIGHT_FRONT;
+            case R.id.board4:
+                return TpmsDevice.TIRE_RIGHT_END;
+            default:
+                return TpmsDevice.TIRE_NONE;
         }
     }
 }

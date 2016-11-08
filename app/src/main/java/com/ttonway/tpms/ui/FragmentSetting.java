@@ -1,11 +1,14 @@
 package com.ttonway.tpms.ui;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +17,7 @@ import android.widget.RadioGroup;
 
 import com.ttonway.tpms.R;
 import com.ttonway.tpms.SPManager;
+import com.ttonway.tpms.usb.TpmsDevice;
 import com.ttonway.tpms.utils.Utils;
 
 import java.util.Locale;
@@ -27,7 +31,7 @@ import io.techery.progresshint.addition.widget.SeekBar;
 /**
  * Created by ttonway on 2016/10/29.
  */
-public class FragmentSetting extends Fragment {
+public class FragmentSetting extends BaseFragment {
 
     @BindView(R.id.group_language)
     RadioGroup mGroupLanguage;
@@ -43,6 +47,30 @@ public class FragmentSetting extends Fragment {
     SeekBar mSeekBarTempUpperLimit;
 
     private Unbinder mUnbinder;
+
+    LocalBroadcastManager mBroadcastManager;
+    BroadcastReceiver mReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            refreshUI();
+        }
+    };
+
+    void refreshUI() {
+        float upperLimit = SPManager.PRESSURE_UPPER_LIMIT_DEFAULT;
+        float lowerLimit = SPManager.PRESSURE_LOWER_LIMIT_DEFAULT;
+        int upperLimit2 = SPManager.TEMP_UPPER_LIMIT_DEFAULT;
+        TpmsDevice device = getTpmeDevice();
+        if (device != null) {
+            upperLimit = device.mPressureHighLimit;
+            lowerLimit = device.mPressureLowLimit;
+            upperLimit2 = device.mTemperatureLimit;
+        }
+
+        mSeekBarUpperLimit.setProgress((int) ((upperLimit - SPManager.PRESSURE_UPPER_LIMIT_MIN) / SPManager.PRESSURE_UPPER_LIMIT_RANGE * 100));
+        mSeekBarLowerLimit.setProgress((int) ((lowerLimit - SPManager.PRESSURE_LOWER_LIMIT_MIN) / SPManager.PRESSURE_LOWER_LIMIT_RANGE * 100));
+        mSeekBarTempUpperLimit.setProgress((int) ((float) (upperLimit2 - SPManager.TEMP_UPPER_LIMIT_MIN) / SPManager.TEMP_UPPER_LIMIT_RANGE * 100 + .5f));
+    }
 
     @Nullable
     @Override
@@ -160,17 +188,15 @@ public class FragmentSetting extends Fragment {
             }
         });
 
-        setupProgressLabels();
-        float upperLimit = SPManager.getFloat(getActivity(), SPManager.KEY_PRESSURE_UPPER_LIMIT, SPManager.PRESSURE_UPPER_LIMIT_DEFAULT);
-        float lowerLimit = SPManager.getFloat(getActivity(), SPManager.KEY_PRESSURE_LOWER_LIMIT, SPManager.PRESSURE_LOWER_LIMIT_DEFAULT);
-        int upperLimit2 = SPManager.getInt(getActivity(), SPManager.KEY_TEMP_UPPER_LIMIT, SPManager.TEMP_UPPER_LIMIT_DEFAULT);
+
         mSeekBarUpperLimit.setMax(100);
         mSeekBarLowerLimit.setMax(100);
         mSeekBarTempUpperLimit.setMax(100);
-        mSeekBarUpperLimit.setProgress((int) ((upperLimit - SPManager.PRESSURE_UPPER_LIMIT_MIN) / SPManager.PRESSURE_UPPER_LIMIT_RANGE * 100));
-        mSeekBarLowerLimit.setProgress((int) ((lowerLimit - SPManager.PRESSURE_LOWER_LIMIT_MIN) / SPManager.PRESSURE_LOWER_LIMIT_RANGE * 100));
-        mSeekBarTempUpperLimit.setProgress((int) ((float) (upperLimit2 - SPManager.TEMP_UPPER_LIMIT_MIN) / SPManager.TEMP_UPPER_LIMIT_RANGE * 100 + .5f));
+        setupProgressLabels();
+        refreshUI();
 
+        mBroadcastManager = LocalBroadcastManager.getInstance(getActivity());
+        mBroadcastManager.registerReceiver(mReceiver, new IntentFilter(TpmsDevice.ACTION_SETTING_CHANGED));
     }
 
     void setupProgressLabels() {
@@ -207,14 +233,18 @@ public class FragmentSetting extends Fragment {
         float bar1 = SPManager.PRESSURE_UPPER_LIMIT_MIN + (float) mSeekBarUpperLimit.getProgress() / 100 * SPManager.PRESSURE_UPPER_LIMIT_RANGE;
         float bar2 = SPManager.PRESSURE_LOWER_LIMIT_MIN + (float) mSeekBarLowerLimit.getProgress() / 100 * SPManager.PRESSURE_LOWER_LIMIT_RANGE;
         int degree = (int) (SPManager.TEMP_UPPER_LIMIT_MIN + (float) mSeekBarTempUpperLimit.getProgress() / 100 * SPManager.TEMP_UPPER_LIMIT_RANGE + .5f);
-        SPManager.setFloat(getActivity(), SPManager.KEY_PRESSURE_UPPER_LIMIT, bar1);
-        SPManager.setFloat(getActivity(), SPManager.KEY_PRESSURE_LOWER_LIMIT, bar2);
-        SPManager.setInt(getActivity(), SPManager.KEY_TEMP_UPPER_LIMIT, degree);
+
+        TpmsDevice device = getTpmeDevice();
+        if (device != null) {
+            device.saveSettings(bar2, bar1, degree);
+        }
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         mUnbinder.unbind();
+
+        mBroadcastManager.unregisterReceiver(mReceiver);
     }
 }

@@ -34,9 +34,9 @@ public class SPManager {
     public static final String KEY_LANGUAGE = "app.language";
     public static final String KEY_PRESSURE_UNIT = "app.pressure-unit";
     public static final String KEY_TEMP_UNIT = "app.temp-unit";
-    public static final String KEY_PRESSURE_UPPER_LIMIT = "app.pressure-upper-limit";
-    public static final String KEY_PRESSURE_LOWER_LIMIT = "app.pressure-lower-limit";
-    public static final String KEY_TEMP_UPPER_LIMIT = "app.temp-upper-limit";
+//    public static final String KEY_PRESSURE_UPPER_LIMIT = "app.pressure-upper-limit";
+//    public static final String KEY_PRESSURE_LOWER_LIMIT = "app.pressure-lower-limit";
+//    public static final String KEY_TEMP_UPPER_LIMIT = "app.temp-upper-limit";
 
     private static final String SP_NAME = "setting";
 
