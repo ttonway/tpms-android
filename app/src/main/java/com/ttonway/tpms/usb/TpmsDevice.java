@@ -234,7 +234,9 @@ public class TpmsDevice {
                 status.temperature = (int) temp;
                 status.battery = 100 * (int) battery;
 
-                mBroadcastManager.sendBroadcast(new Intent(ACTION_STATUS_UPDATED));
+                Intent intent = new Intent(ACTION_STATUS_UPDATED);
+                intent.putExtra("tire", tire);
+                mBroadcastManager.sendBroadcast(intent);
                 break;
             }
             // 学习配对(ACK)

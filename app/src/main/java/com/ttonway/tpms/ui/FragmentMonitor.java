@@ -4,9 +4,11 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v4.graphics.drawable.DrawableCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +17,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.ttonway.tpms.R;
+import com.ttonway.tpms.usb.TireStatus;
 import com.ttonway.tpms.usb.TpmsDevice;
 import com.ttonway.tpms.utils.Utils;
 
@@ -40,6 +43,8 @@ public class FragmentMonitor extends BaseFragment {
 
     private Unbinder mUnbinder;
 
+    public static final String NO_VALUE = "---";
+
     LocalBroadcastManager mBroadcastManager;
     BroadcastReceiver mReceiver = new BroadcastReceiver() {
         @Override
@@ -55,23 +60,41 @@ public class FragmentMonitor extends BaseFragment {
 
         TpmsDevice device = getTpmeDevice();
         if (device == null) {
-            for (TextView textView : mPressureTextViews) {
-                textView.setText(Utils.formatPressure(getActivity(), 0));
-            }
-            for (TextView textView : mTempTextViews) {
-                textView.setText(Utils.formatTemperature(getActivity(), 0));
+            for (byte tire = TpmsDevice.TIRE_LEFT_FRONT; tire <= TpmsDevice.TIRE_LEFT_END; tire++) {
+                LinearLayout board = mBoards.get(tire);
+                TextView pressureText = mPressureTextViews.get(tire);
+                TextView tempText = mTempTextViews.get(tire);
+                ImageView batteryImage = mBatteryImageViews.get(tire);
+
+                pressureText.setText(NO_VALUE);
+                pressureText.setSelected(false);
+                tempText.setText(NO_VALUE);
+                tempText.setSelected(false);
+                batteryImage.getDrawable().setLevel(0);
+                batteryImage.setSelected(false);
+                board.setSelected(false);
             }
             return;
         }
 
 
-        byte tire = TpmsDevice.TIRE_LEFT_FRONT;
-        for (TextView textView : mPressureTextViews) {
-            textView.setText(Utils.formatPressure(getActivity(), device.getTireStatus(tire++).pressure));
-        }
-        tire = TpmsDevice.TIRE_LEFT_FRONT;
-        for (TextView textView : mTempTextViews) {
-            textView.setText(Utils.formatTemperature(getActivity(), device.getTireStatus(tire++).temperature));
+        for (byte tire = TpmsDevice.TIRE_LEFT_FRONT; tire <= TpmsDevice.TIRE_LEFT_END; tire++) {
+            TireStatus tireStatus = device.getTireStatus(tire);
+            LinearLayout board = mBoards.get(tire);
+            TextView pressureText = mPressureTextViews.get(tire);
+            TextView tempText = mTempTextViews.get(tire);
+            ImageView batteryImage = mBatteryImageViews.get(tire);
+
+            pressureText.setText(tireStatus.pressureStatus == TireStatus.PRESSURE_ERROR ?
+                    NO_VALUE : Utils.formatPressure(getActivity(), tireStatus.pressure));
+            pressureText.setSelected(tireStatus.pressureStatus != TireStatus.PRESSURE_NORMAL);
+            tempText.setText(Utils.formatTemperature(getActivity(), tireStatus.temperature));
+            tempText.setSelected(tireStatus.temperatureStatus != TireStatus.TEMPERATURE_NORMAL);
+            batteryImage.getDrawable().setLevel((6 * tireStatus.battery / 25500) % 6);//level 0-5
+            batteryImage.setSelected(tireStatus.batteryStatus != TireStatus.BATTERY_NORMAL);
+            board.setSelected(tireStatus.pressureStatus != TireStatus.PRESSURE_NORMAL
+                    || tireStatus.temperatureStatus != TireStatus.TEMPERATURE_NORMAL
+                    || tireStatus.batteryStatus != TireStatus.BATTERY_NORMAL);
         }
     }
 
@@ -86,6 +109,19 @@ public class FragmentMonitor extends BaseFragment {
         super.onViewCreated(view, savedInstanceState);
         mUnbinder = ButterKnife.bind(this, view);
 
+        for (LinearLayout board : mBoards) {
+            Drawable drawable = board.getBackground();
+            final Drawable wrappedDrawable = DrawableCompat.wrap(drawable);
+            DrawableCompat.setTintList(wrappedDrawable, getResources().getColorStateList(R.color.board_tintcolor));
+            board.setBackgroundDrawable(wrappedDrawable);
+        }
+        for (ImageView imageView : mBatteryImageViews) {
+            Drawable drawable = imageView.getDrawable();
+            final Drawable wrappedDrawable = DrawableCompat.wrap(drawable);
+            DrawableCompat.setTintList(wrappedDrawable, getResources().getColorStateList(R.color.board_tintcolor));
+            imageView.setImageDrawable(wrappedDrawable);
+        }
+
         mBroadcastManager = LocalBroadcastManager.getInstance(getActivity());
         mBroadcastManager.registerReceiver(mReceiver, new IntentFilter(TpmsDevice.ACTION_STATUS_UPDATED));
 
@@ -98,17 +134,5 @@ public class FragmentMonitor extends BaseFragment {
         mUnbinder.unbind();
 
         mBroadcastManager.unregisterReceiver(mReceiver);
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-
-        for (TextView textView : mPressureTextViews) {
-            textView.setText(Utils.formatPressure(getActivity(), 0.f));
-        }
-        for (TextView textView : mTempTextViews) {
-            textView.setText(Utils.formatTemperature(getActivity(), 0));
-        }
     }
 }

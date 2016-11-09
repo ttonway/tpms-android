@@ -37,7 +37,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="right"
-                android:src="@drawable/battery3" />
+                android:src="@drawable/battery" />
 
             <TextView
                 android:id="@+id/pressure1"
@@ -74,7 +74,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="right"
-                android:src="@drawable/battery3" />
+                android:src="@drawable/battery" />
 
             <TextView
                 android:id="@+id/pressure2"
@@ -125,7 +125,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="right"
-                android:src="@drawable/battery3" />
+                android:src="@drawable/battery" />
 
             <TextView
                 android:id="@+id/pressure3"
@@ -162,7 +162,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="right"
-                android:src="@drawable/battery3" />
+                android:src="@drawable/battery" />
 
             <TextView
                 android:id="@+id/pressure4"

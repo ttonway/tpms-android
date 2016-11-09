@@ -4,7 +4,17 @@
     <string name="tab_learn">Tire\nMatch</string>
     <string name="tab_exchange">Tire\nExchange</string>
     <string name="tab_setting">Setting</string>
+    <string name="btn_ok">OK</string>
+    <string name="btn_cancel">Cancel</string>
     <string name="btn_voice">Sound</string>
+    <string name="btn_tire1">Left Front Wheel</string>
+    <string name="btn_tire2">Left End Wheel</string>
+    <string name="btn_tire3">Right Front Wheel</string>
+    <string name="btn_tire4">Right End Wheel</string>
+    <string name="btn_tire1_match">Left Front Match</string>
+    <string name="btn_tire2_match">Left End Match</string>
+    <string name="btn_tire3_match">Right Front Match</string>
+    <string name="btn_tire4_match">Right End Match</string>
 
     <string name="label_language">Language</string>
     <string name="label_unit">Pressure Unit</string>
@@ -12,5 +22,31 @@
     <string name="label_pressure_max">Pressure Alarm\nUpper Limit</string>
     <string name="label_pressure_min">Pressure Alarm\nLower Limit</string>
     <string name="label_temperature_max">Temperature\nAlarm Upper</string>
+
+    <string name="alert_message_usb_host_unavailable">USB HOST not supported, please try other devices</string>
+    <string name="alert_message_usb_io_error">Host IO error</string>
+    <string name="alert_message_learn">Mathing %1$s</string>
+    <string name="alert_message_exchange">Confirm to exchange %1$s and %2$s</string>
+
+    <string name="voice_tire1_pressure_high">left front wheel pressure high</string>
+    <string name="voice_tire2_pressure_high">left end wheel pressure high</string>
+    <string name="voice_tire3_pressure_high">right front wheel pressure high</string>
+    <string name="voice_tire4_pressure_high">right end wheel pressure high</string>
+    <string name="voice_tire1_pressure_low">left front wheel pressure low</string>
+    <string name="voice_tire2_pressure_low">left end wheel pressure low</string>
+    <string name="voice_tire3_pressure_low">right front wheel pressure low</string>
+    <string name="voice_tire4_pressure_low">right end wheel pressure low</string>
+    <string name="voice_tire1_pressure_error">left front wheel sensor error</string>
+    <string name="voice_tire2_pressure_error">left end wheel sensor error</string>
+    <string name="voice_tire3_pressure_error">right front wheel sensor error</string>
+    <string name="voice_tire4_pressure_error">right end wheel sensor error</string>
+    <string name="voice_tire1_temp_high">left front wheel temperature high</string>
+    <string name="voice_tire2_temp_high">left end wheel temperature high</string>
+    <string name="voice_tire3_temp_high">right front wheel temperature high</string>
+    <string name="voice_tire4_temp_high">right end wheel temperature high</string>
+    <string name="voice_tire1_battery_low">left front wheel battery low</string>
+    <string name="voice_tire2_battery_low">left end wheel battery low</string>
+    <string name="voice_tire3_battery_low">right front wheel battery low</string>
+    <string name="voice_tire4_battery_low">right end wheel battery low</string>
 
 </resources>

@@ -4,6 +4,9 @@ import android.app.Application;
 import android.content.Context;
 import android.util.Log;
 
+import com.iflytek.cloud.SpeechConstant;
+import com.iflytek.cloud.SpeechUtility;
+
 import java.io.File;
 import java.io.IOException;
 
@@ -20,6 +23,8 @@ public class MyApp extends Application {
         Log.i(TAG, "onCreate");
 
         saveLogcatToFile(this);
+
+        SpeechUtility.createUtility(this, SpeechConstant.APPID +"=58228f78");
     }
 
     public static void saveLogcatToFile(Context context) {

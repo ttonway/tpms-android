@@ -31,6 +31,7 @@ public class SPManager {
     public static final int TEMP_UPPER_LIMIT_RANGE = TEMP_UPPER_LIMIT_MAX - TEMP_UPPER_LIMIT_MIN;
     public static final int TEMP_UPPER_LIMIT_DEFAULT = 70;
 
+    public static final String KEY_VOICE_OPEN = "app.voice-open";
     public static final String KEY_LANGUAGE = "app.language";
     public static final String KEY_PRESSURE_UNIT = "app.pressure-unit";
     public static final String KEY_TEMP_UNIT = "app.temp-unit";

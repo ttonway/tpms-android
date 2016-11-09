@@ -1,0 +1,31 @@
+<resources>
+
+    <string name="tab_monitor">監控</string>
+    <string name="tab_learn">學習</string>
+    <string name="tab_exchange">交換</string>
+    <string name="tab_setting">設置</string>
+    <string name="btn_ok">確定</string>
+    <string name="btn_cancel">取消</string>
+    <string name="btn_voice">聲音</string>
+    <string name="btn_tire1">左前輪</string>
+    <string name="btn_tire2">左後輪</string>
+    <string name="btn_tire3">右前輪</string>
+    <string name="btn_tire4">右後輪</string>
+    <string name="btn_tire1_match">左前輪學習</string>
+    <string name="btn_tire2_match">左後輪學習</string>
+    <string name="btn_tire3_match">右前輪學習</string>
+    <string name="btn_tire4_match">右後輪學習</string>
+
+    <string name="label_language">語言</string>
+    <string name="label_unit">壓力單位</string>
+    <string name="label_degree">溫度單位</string>
+    <string name="label_pressure_max">壓力報警上限</string>
+    <string name="label_pressure_min">壓力報警下限</string>
+    <string name="label_temperature_max">溫度報警上限</string>
+
+    <string name="alert_message_usb_host_unavailable">您的手機不支持USB HOST，請更換其他手機再試</string>
+    <string name="alert_message_usb_io_error">主機連接錯誤</string>
+    <string name="alert_message_learn">胎壓學習搜索中%1$s</string>
+    <string name="alert_message_exchange">是否交換%1$s和%2$s</string>
+
+</resources>
