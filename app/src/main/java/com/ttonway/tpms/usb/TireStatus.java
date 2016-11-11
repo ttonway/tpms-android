@@ -15,7 +15,8 @@ public class TireStatus {
     public static final int TEMPERATURE_NORMAL = 0;
     public static final int TEMPERATURE_HIGH = 1;
 
-    
+    public boolean inited = false;
+
     public int pressureStatus;
     public int batteryStatus;
     public int temperatureStatus;
@@ -23,4 +24,13 @@ public class TireStatus {
     public float pressure;//Bar
     public int battery;//mV
     public int temperature;//摄氏度
+
+    @Override
+    public String toString() {
+        return "TireStatus{" +
+                pressure + "Bar[" + pressureStatus + "], " +
+                temperature + "%C[" + temperatureStatus + "], " +
+                battery + "mV[" + batteryStatus + "]" +
+                '}';
+    }
 }

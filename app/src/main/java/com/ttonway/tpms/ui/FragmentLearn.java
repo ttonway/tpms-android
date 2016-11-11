@@ -1,19 +1,17 @@
 package com.ttonway.tpms.ui;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.content.LocalBroadcastManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.google.common.eventbus.Subscribe;
 import com.ttonway.tpms.R;
+import com.ttonway.tpms.usb.TimeoutEvent;
+import com.ttonway.tpms.usb.TireMatchedEvent;
 import com.ttonway.tpms.usb.TpmsDevice;
 
 import java.util.List;
@@ -37,32 +35,38 @@ public class FragmentLearn extends BaseFragment {
     byte mMatchingTire = TpmsDevice.TIRE_NONE;
     DialogLearn mProgressDialog;
 
-    LocalBroadcastManager mBroadcastManager;
-    BroadcastReceiver mReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
+    Object mReceiver = new Object() {
 
+        @Subscribe
+        public void onTimeout(TimeoutEvent e) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    mMatchingTire = TpmsDevice.TIRE_NONE;
+                    if (mProgressDialog != null) {
+                        mProgressDialog.dismissAllowingStateLoss();
+                    }
+                }
+            });
+        }
 
-            if (intent.getAction().equals(TpmsDevice.ACTION_TIRE_MATCHED)) {
-                byte tire = intent.getByteExtra("tire", TpmsDevice.TIRE_NONE);
-                String value = intent.getStringExtra("value");
+        @Subscribe
+        public void onTireMatched(final TireMatchedEvent e) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    if (mProgressDialog != null && e.tire == mMatchingTire) {
+                        mProgressDialog.dismissAllowingStateLoss();
+                    }
 
-                if (mProgressDialog != null && tire == mMatchingTire) {
-                    mProgressDialog.dismissAllowingStateLoss();
+                    if (mTextViews == null || mTextViews.size() != 4) {
+                        return;
+                    }
+                    if (e.tire >= 0 && e.tire < mTextViews.size()) {
+                        mTextViews.get(e.tire).setText(e.value);
+                    }
                 }
-
-                if (mTextViews == null || mTextViews.size() != 4) {
-                    return;
-                }
-                if (tire >= 0 && tire < mTextViews.size()) {
-                    mTextViews.get(tire).setText(value);
-                }
-            } else if (intent.getAction().equals(TpmsDevice.ACTION_COMMAND_ERROR)) {
-                mMatchingTire = TpmsDevice.TIRE_NONE;
-                if (mProgressDialog != null) {
-                    mProgressDialog.dismissAllowingStateLoss();
-                }
-            }
+            });
         }
     };
 
@@ -77,11 +81,7 @@ public class FragmentLearn extends BaseFragment {
         super.onViewCreated(view, savedInstanceState);
         mUnbinder = ButterKnife.bind(this, view);
 
-        mBroadcastManager = LocalBroadcastManager.getInstance(getActivity());
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(TpmsDevice.ACTION_TIRE_MATCHED);
-        intentFilter.addAction(TpmsDevice.ACTION_COMMAND_ERROR);
-        mBroadcastManager.registerReceiver(mReceiver, intentFilter);
+        getEventBus().register(mReceiver);
     }
 
     @Override
@@ -89,7 +89,7 @@ public class FragmentLearn extends BaseFragment {
         super.onDestroyView();
         mUnbinder.unbind();
 
-        mBroadcastManager.unregisterReceiver(mReceiver);
+        getEventBus().unregister(mReceiver);
     }
 
     @OnClick({R.id.board1, R.id.board3, R.id.board4, R.id.board2})

@@ -1,15 +1,11 @@
 package com.ttonway.tpms.ui;
 
-import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.hardware.usb.UsbManager;
 import android.support.annotation.Nullable;
-import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -21,12 +17,16 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.TabHost;
 
+import com.google.common.eventbus.EventBus;
+import com.google.common.eventbus.Subscribe;
 import com.iflytek.cloud.SpeechConstant;
 import com.iflytek.cloud.SpeechSynthesizer;
 import com.ttonway.tpms.MyApp;
 import com.ttonway.tpms.R;
 import com.ttonway.tpms.SPManager;
+import com.ttonway.tpms.usb.TimeoutEvent;
 import com.ttonway.tpms.usb.TireStatus;
+import com.ttonway.tpms.usb.TireStatusUpdatedEvent;
 import com.ttonway.tpms.usb.TpmsDevice;
 import com.ttonway.tpms.widget.TabManager;
 
@@ -68,21 +68,31 @@ public class MainActivity extends AppCompatActivity {
 
     SpeechSynthesizer mTTS;
 
+    EventBus mEventBus;
     TpmsDevice mDevice;
 
-    LocalBroadcastManager mBroadcastManager;
-    BroadcastReceiver mReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if (intent.getAction().equals(TpmsDevice.ACTION_COMMAND_ERROR)) {
-                DialogAlert.showDialog(getSupportFragmentManager(), getString(R.string.alert_message_usb_io_error));
-            } else if (intent.getAction().equals(TpmsDevice.ACTION_STATUS_UPDATED)) {
-                byte tire = intent.getByteExtra("tire", TpmsDevice.TIRE_NONE);
-                if (mVoiceBtn.isSelected() && mDevice != null && tire != TpmsDevice.TIRE_NONE) {
-                    TireStatus status = mDevice.getTireStatus(tire);
-                    speakAlert(tire, status);
+    Object mReceiver = new Object() {
+        @Subscribe
+        public void onTimeout(TimeoutEvent e) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    DialogAlert.showDialog(getSupportFragmentManager(), getString(R.string.alert_message_usb_io_error));
                 }
-            }
+            });
+        }
+
+        @Subscribe
+        public void onStatusUpdated(final TireStatusUpdatedEvent e) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    if (mVoiceBtn.isSelected() && mDevice != null) {
+                        TireStatus status = mDevice.getTireStatus(e.tire);
+                        speakAlert(e.tire, status);
+                    }
+                }
+            });
         }
     };
 
@@ -130,12 +140,14 @@ public class MainActivity extends AppCompatActivity {
         }
 
         String str = getResources().getString(id);
+        Log.d(TAG, "speak " + str);
         mTTS.startSpeaking(str, null);
     }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.d(TAG, "onCreate");
 
         Locale locale = SPManager.getCurrentLocale(this);
         Resources resources = getResources();
@@ -158,7 +170,7 @@ public class MainActivity extends AppCompatActivity {
 
         initTTS();
 
-        mBroadcastManager = LocalBroadcastManager.getInstance(this);
+        mEventBus = new EventBus();
 
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);// 保持常亮的屏幕的状态
         MyApp.driver = new CH34xUARTDriver(
@@ -167,7 +179,7 @@ public class MainActivity extends AppCompatActivity {
         if (!MyApp.driver.UsbFeatureSupported()) {// 判断系统是否支持USB HOST
             DialogAlert.showDialog(getSupportFragmentManager(), getString(R.string.alert_message_usb_host_unavailable));
         } else {
-            TpmsDevice device = new TpmsDevice(this, MyApp.driver);
+            TpmsDevice device = new TpmsDevice(MyApp.driver, mEventBus);
             if (device.openDevice()) {
                 device.querySettings();
                 mDevice = device;
@@ -192,28 +204,34 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(TpmsDevice.ACTION_COMMAND_ERROR);
-        intentFilter.addAction(TpmsDevice.ACTION_STATUS_UPDATED);
-        mBroadcastManager.registerReceiver(mReceiver, intentFilter);
+        mEventBus.register(mReceiver);
+
+        if (mDevice == null) {
+            TpmsDevice device = new TpmsDevice(MyApp.driver, mEventBus);
+            if (device.openDevice()) {
+                device.querySettings();
+                mDevice = device;
+            }
+        }
     }
 
     @Override
     protected void onPause() {
         super.onPause();
 
-        mBroadcastManager.unregisterReceiver(mReceiver);
+        mEventBus.unregister(mReceiver);
+
+        if (mDevice != null) {
+            mDevice.closeDevice();
+        }
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        Log.d(TAG, "onDestroy");
 
         mTTS.destroy();
-
-        if (mDevice != null) {
-            mDevice.closeDevice();
-        }
     }
 
     private void initTabHost() {

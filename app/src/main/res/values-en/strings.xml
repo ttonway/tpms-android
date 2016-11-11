@@ -28,25 +28,4 @@
     <string name="alert_message_learn">Mathing %1$s</string>
     <string name="alert_message_exchange">Confirm to exchange %1$s and %2$s</string>
 
-    <string name="voice_tire1_pressure_high">left front wheel pressure high</string>
-    <string name="voice_tire2_pressure_high">left end wheel pressure high</string>
-    <string name="voice_tire3_pressure_high">right front wheel pressure high</string>
-    <string name="voice_tire4_pressure_high">right end wheel pressure high</string>
-    <string name="voice_tire1_pressure_low">left front wheel pressure low</string>
-    <string name="voice_tire2_pressure_low">left end wheel pressure low</string>
-    <string name="voice_tire3_pressure_low">right front wheel pressure low</string>
-    <string name="voice_tire4_pressure_low">right end wheel pressure low</string>
-    <string name="voice_tire1_pressure_error">left front wheel sensor error</string>
-    <string name="voice_tire2_pressure_error">left end wheel sensor error</string>
-    <string name="voice_tire3_pressure_error">right front wheel sensor error</string>
-    <string name="voice_tire4_pressure_error">right end wheel sensor error</string>
-    <string name="voice_tire1_temp_high">left front wheel temperature high</string>
-    <string name="voice_tire2_temp_high">left end wheel temperature high</string>
-    <string name="voice_tire3_temp_high">right front wheel temperature high</string>
-    <string name="voice_tire4_temp_high">right end wheel temperature high</string>
-    <string name="voice_tire1_battery_low">left front wheel battery low</string>
-    <string name="voice_tire2_battery_low">left end wheel battery low</string>
-    <string name="voice_tire3_battery_low">right front wheel battery low</string>
-    <string name="voice_tire4_battery_low">right end wheel battery low</string>
-
 </resources>

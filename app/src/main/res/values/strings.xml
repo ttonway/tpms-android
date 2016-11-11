@@ -1,5 +1,14 @@
 <resources>
-    <string name="app_name">TPMS</string>
+    <string name="app_name" translatable="false">TPMS</string>
+    <string name="language_simplified_chinese" translatable="false">中文简体</string>
+    <string name="language_traditional_chinese" translatable="false">中文繁體</string>
+    <string name="language_english" translatable="false">English</string>
+    <string name="unit_bar" translatable="false">Bar</string>
+    <string name="unit_psi" translatable="false">PSI</string>
+    <string name="unit_kpa" translatable="false">Kpa</string>
+    <string name="unit_kg" translatable="false">Kg</string>
+    <string name="degree_celsius" translatable="false">℃</string>
+    <string name="degree_fahrenheit" translatable="false">℉</string>
 
     <string name="tab_monitor">监控</string>
     <string name="tab_learn">学习</string>
@@ -29,34 +38,4 @@
     <string name="alert_message_learn">胎压学习搜索中%1$s</string>
     <string name="alert_message_exchange">是否交换%1$s和%2$s</string>
 
-    <string name="language_simplified_chinese">中文简体</string>
-    <string name="language_traditional_chinese">中文繁體</string>
-    <string name="language_english">English</string>
-    <string name="unit_bar">Bar</string>
-    <string name="unit_psi">PSI</string>
-    <string name="unit_kpa">Kpa</string>
-    <string name="unit_kg">Kg</string>
-    <string name="degree_celsius">℃</string>
-    <string name="degree_fahrenheit">℉</string>
-
-    <string name="voice_tire1_pressure_high">左前轮胎压过高</string>
-    <string name="voice_tire2_pressure_high">左后轮胎压过高</string>
-    <string name="voice_tire3_pressure_high">右前轮胎压过高</string>
-    <string name="voice_tire4_pressure_high">右后轮胎压过高</string>
-    <string name="voice_tire1_pressure_low">左前轮胎压过低</string>
-    <string name="voice_tire2_pressure_low">左后轮胎压过低</string>
-    <string name="voice_tire3_pressure_low">右前轮胎压过低</string>
-    <string name="voice_tire4_pressure_low">右后轮胎压过低</string>
-    <string name="voice_tire1_pressure_error">左前轮传感器失效</string>
-    <string name="voice_tire2_pressure_error">左后轮传感器失效</string>
-    <string name="voice_tire3_pressure_error">右前轮传感器失效</string>
-    <string name="voice_tire4_pressure_error">右后轮传感器失效</string>
-    <string name="voice_tire1_temp_high">左前轮温度过高</string>
-    <string name="voice_tire2_temp_high">左后轮温度过高</string>
-    <string name="voice_tire3_temp_high">右前轮温度过高</string>
-    <string name="voice_tire4_temp_high">右后轮温度过高</string>
-    <string name="voice_tire1_battery_low">左前轮电量不足</string>
-    <string name="voice_tire2_battery_low">左后轮电量不足</string>
-    <string name="voice_tire3_battery_low">右前轮电量不足</string>
-    <string name="voice_tire4_battery_low">右后轮电量不足</string>
 </resources>

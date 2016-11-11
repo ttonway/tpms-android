@@ -1,22 +1,20 @@
 package com.ttonway.tpms.ui;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.content.LocalBroadcastManager;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RadioGroup;
 
+import com.google.common.eventbus.Subscribe;
 import com.ttonway.tpms.R;
 import com.ttonway.tpms.SPManager;
+import com.ttonway.tpms.usb.SettingChangeEvent;
 import com.ttonway.tpms.usb.TpmsDevice;
 import com.ttonway.tpms.utils.Utils;
 
@@ -48,11 +46,16 @@ public class FragmentSetting extends BaseFragment {
 
     private Unbinder mUnbinder;
 
-    LocalBroadcastManager mBroadcastManager;
-    BroadcastReceiver mReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            refreshUI();
+    Object mReceiver = new Object() {
+
+        @Subscribe
+        public void onSettingChanged(final SettingChangeEvent e) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    refreshUI();
+                }
+            });
         }
     };
 
@@ -195,8 +198,7 @@ public class FragmentSetting extends BaseFragment {
         setupProgressLabels();
         refreshUI();
 
-        mBroadcastManager = LocalBroadcastManager.getInstance(getActivity());
-        mBroadcastManager.registerReceiver(mReceiver, new IntentFilter(TpmsDevice.ACTION_SETTING_CHANGED));
+        getEventBus().register(mReceiver);
     }
 
     void setupProgressLabels() {
@@ -245,6 +247,6 @@ public class FragmentSetting extends BaseFragment {
         super.onDestroyView();
         mUnbinder.unbind();
 
-        mBroadcastManager.unregisterReceiver(mReceiver);
+        getEventBus().unregister(mReceiver);
     }
 }

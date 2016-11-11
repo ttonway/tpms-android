@@ -1,0 +1,22 @@
+<resources>
+    <string name="voice_tire1_pressure_high">左前轮胎压过高</string>
+    <string name="voice_tire2_pressure_high">左后轮胎压过高</string>
+    <string name="voice_tire3_pressure_high">右前轮胎压过高</string>
+    <string name="voice_tire4_pressure_high">右后轮胎压过高</string>
+    <string name="voice_tire1_pressure_low">左前轮胎压过低</string>
+    <string name="voice_tire2_pressure_low">左后轮胎压过低</string>
+    <string name="voice_tire3_pressure_low">右前轮胎压过低</string>
+    <string name="voice_tire4_pressure_low">右后轮胎压过低</string>
+    <string name="voice_tire1_pressure_error">左前轮传感器失效</string>
+    <string name="voice_tire2_pressure_error">左后轮传感器失效</string>
+    <string name="voice_tire3_pressure_error">右前轮传感器失效</string>
+    <string name="voice_tire4_pressure_error">右后轮传感器失效</string>
+    <string name="voice_tire1_temp_high">左前轮温度过高</string>
+    <string name="voice_tire2_temp_high">左后轮温度过高</string>
+    <string name="voice_tire3_temp_high">右前轮温度过高</string>
+    <string name="voice_tire4_temp_high">右后轮温度过高</string>
+    <string name="voice_tire1_battery_low">左前轮电量不足</string>
+    <string name="voice_tire2_battery_low">左后轮电量不足</string>
+    <string name="voice_tire3_battery_low">右前轮电量不足</string>
+    <string name="voice_tire4_battery_low">右后轮电量不足</string>
+</resources>

@@ -1,11 +1,10 @@
 package com.ttonway.tpms.usb;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
-import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
+import com.google.common.eventbus.EventBus;
 import com.ttonway.tpms.SPManager;
 
 import java.util.ArrayList;
@@ -32,9 +31,8 @@ public class TpmsDevice {
     public static final byte TIRE_RIGHT_END = 2;
     public static final byte TIRE_LEFT_END = 3;
 
-    Context mContext;
     CH34xUARTDriver mDriver;
-    LocalBroadcastManager mBroadcastManager;
+    EventBus mEventBus;
 
 
     Handler mHandler = new Handler();
@@ -51,10 +49,9 @@ public class TpmsDevice {
     public TireStatus mRightEnd = new TireStatus();
     public TireStatus mLeftEnd = new TireStatus();
 
-    public TpmsDevice(Context context, CH34xUARTDriver driver) {
-        this.mContext = context;
+    public TpmsDevice(CH34xUARTDriver driver, EventBus eventBus) {
         this.mDriver = driver;
-        this.mBroadcastManager = LocalBroadcastManager.getInstance(context);
+        this.mEventBus = eventBus;
     }
 
     public boolean openDevice() {
@@ -227,16 +224,15 @@ public class TpmsDevice {
                 byte temp = data[3];
                 byte battery = data[4];
                 TireStatus status = getTireStatus(tire);
+                status.inited = true;
                 status.pressureStatus = alarm & 0x03;
-                status.pressureStatus = (alarm >> 2) & 0x01;
-                status.pressureStatus = (alarm >> 3) & 0x01;
+                status.batteryStatus = (alarm >> 2) & 0x01;
+                status.temperatureStatus = (alarm >> 3) & 0x01;
                 status.pressure = 0.1f * (int) pressure;
                 status.temperature = (int) temp;
                 status.battery = 100 * (int) battery;
 
-                Intent intent = new Intent(ACTION_STATUS_UPDATED);
-                intent.putExtra("tire", tire);
-                mBroadcastManager.sendBroadcast(intent);
+                mEventBus.post(new TireStatusUpdatedEvent(tire));
                 break;
             }
             // 学习配对(ACK)
@@ -255,10 +251,7 @@ public class TpmsDevice {
                 byte[] array = Arrays.copyOfRange(data, 1, 5);
                 String str = toHexString(array, 4);
 
-                Intent intent = new Intent(ACTION_TIRE_MATCHED);
-                intent.putExtra("tire", tire);
-                intent.putExtra("value", str);
-                mBroadcastManager.sendBroadcast(intent);
+                mEventBus.post(new TireMatchedEvent(tire, str));
                 break;
             }
             // 换轮模式(ACK)
@@ -273,7 +266,7 @@ public class TpmsDevice {
                 mTemperatureLimit = (int) data[2];
                 removeCommands(cmd, data);
 
-                mBroadcastManager.sendBroadcast(new Intent(ACTION_SETTING_CHANGED));
+                mEventBus.post(new SettingChangeEvent());
                 break;
             }
             // 查询应答
@@ -283,7 +276,7 @@ public class TpmsDevice {
                 mTemperatureLimit = (int) data[2];
                 removeCommands((byte) 0x07, new byte[0]);
 
-                mBroadcastManager.sendBroadcast(new Intent(ACTION_SETTING_CHANGED));
+                mEventBus.post(new SettingChangeEvent());
                 break;
             }
             default: {
@@ -406,11 +399,11 @@ public class TpmsDevice {
                 } else {
                     Log.e(TAG, "writeData fail.");
                     removeCommand(this);
-                    mBroadcastManager.sendBroadcast(new Intent(ACTION_COMMAND_ERROR));
+                    mEventBus.post(new TimeoutEvent());
                 }
             } else {
                 removeCommand(this);
-                mBroadcastManager.sendBroadcast(new Intent(ACTION_COMMAND_ERROR));
+                mEventBus.post(new TimeoutEvent());
             }
         }
     }

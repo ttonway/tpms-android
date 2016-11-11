@@ -1,13 +1,8 @@
 package com.ttonway.tpms.ui;
 
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.content.DialogInterface;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.app.Fragment;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
