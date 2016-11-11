@@ -1,6 +1,5 @@
 package com.ttonway.tpms.usb;
 
-import android.content.Intent;
 import android.os.Handler;
 import android.util.Log;
 
@@ -19,11 +18,6 @@ import cn.wch.ch34xuartdriver.CH34xUARTDriver;
  */
 public class TpmsDevice {
     private static final String TAG = TpmsDevice.class.getSimpleName();
-
-    public static final String ACTION_STATUS_UPDATED = "com.ttonway.tpms.usb.ACTION_STATUS_UPDATED";
-    public static final String ACTION_SETTING_CHANGED = "com.ttonway.tpms.usb.ACTION_SETTING_CHANGED";
-    public static final String ACTION_COMMAND_ERROR = "com.ttonway.tpms.usb.ACTION_COMMAND_ERROR";
-    public static final String ACTION_TIRE_MATCHED = "com.ttonway.tpms.usb.ACTION_TIRE_MATCHED";
 
     public static final byte TIRE_NONE = Byte.MIN_VALUE;
     public static final byte TIRE_LEFT_FRONT = 0;
@@ -125,7 +119,7 @@ public class TpmsDevice {
 
         Log.d(TAG, "[WriteData] " + toHexString(buf, index));
         int retval = mDriver.WriteData(buf, index);
-        return retval < 0 ? false : true;
+        return retval >= 0;
     }
 
     public TireStatus getTireStatus(byte tire) {
