@@ -27,5 +27,6 @@
     <string name="alert_message_usb_io_error">Host IO error</string>
     <string name="alert_message_learn">Mathing %1$s</string>
     <string name="alert_message_exchange">Confirm to exchange %1$s and %2$s</string>
+    <string name="toast_learn_success">Match success</string>
 
 </resources>

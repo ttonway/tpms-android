@@ -37,5 +37,6 @@
     <string name="alert_message_usb_io_error">主机连接错误</string>
     <string name="alert_message_learn">胎压学习搜索中%1$s</string>
     <string name="alert_message_exchange">是否交换%1$s和%2$s</string>
+    <string name="toast_learn_success">学习成功</string>
 
 </resources>

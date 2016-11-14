@@ -33,14 +33,6 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/text1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="00000000"
-                android:textColor="@color/board_content_tintcolor"
-                android:textSize="14sp" />
-
-            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/btn_tire1_match"
@@ -61,14 +53,6 @@
             android:background="@drawable/left_board"
             android:gravity="center"
             android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/text2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="00000000"
-                android:textColor="@color/board_content_tintcolor"
-                android:textSize="14sp" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -106,15 +90,6 @@
             android:gravity="center"
             android:orientation="vertical">
 
-
-            <TextView
-                android:id="@+id/text3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="00000000"
-                android:textColor="@color/board_content_tintcolor"
-                android:textSize="14sp" />
-
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -136,14 +111,6 @@
             android:background="@drawable/right_board"
             android:gravity="center"
             android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/text4"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="00000000"
-                android:textColor="@color/board_content_tintcolor"
-                android:textSize="14sp" />
 
             <TextView
                 android:layout_width="wrap_content"

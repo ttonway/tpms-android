@@ -30,7 +30,7 @@ public class TpmsDevice {
 
 
     Handler mHandler = new Handler();
-    Thread mReadThread;
+    ReadThread mReadThread;
     boolean mOpen;
 
     final List<WriteCommand> mCommands = new ArrayList<>();
@@ -51,12 +51,8 @@ public class TpmsDevice {
     public boolean openDevice() {
         Log.d(TAG, "openDevice");
         if (mOpen) {
+            Log.e(TAG, "Already opened.");
             return true;
-        }
-
-        if (mReadThread != null) {
-            Log.e(TAG, "Read thread not released.");
-            return false;
         }
 
         // ResumeUsbList方法用于枚举CH34X设备以及打开相关设备
@@ -84,17 +80,25 @@ public class TpmsDevice {
             return false;
         }
 
+        this.mReadThread = new ReadThread();
+        this.mReadThread.start();
         mOpen = true;
-        mReadThread = new ReadThread();
-        mReadThread.start();
         return true;
     }
 
     public void closeDevice() {
+        Log.d(TAG, "closeDevice");
         if (mOpen) {
+            mReadThread.stopRunning();
+            mReadThread = null;
+
             mDriver.CloseDevice();
             mOpen = false;
         }
+    }
+
+    public boolean isOpen() {
+        return mOpen;
     }
 
     private byte makeParity(byte[] buf, int length) {
@@ -214,8 +218,8 @@ public class TpmsDevice {
             case 0x01: {
                 byte tire = data[0];
                 byte alarm = data[1];
-                byte pressure = data[2];
-                byte temp = data[3];
+                byte temp = data[2];
+                byte pressure = data[3];
                 byte battery = data[4];
                 TireStatus status = getTireStatus(tire);
                 status.inited = true;
@@ -224,6 +228,9 @@ public class TpmsDevice {
                 status.temperatureStatus = (alarm >> 3) & 0x01;
                 status.pressure = 0.1f * (int) pressure;
                 status.temperature = (int) temp;
+                if (status.temperature > 100) {
+                    status.temperature = 0;
+                }
                 status.battery = 100 * (int) battery;
 
                 mEventBus.post(new TireStatusUpdatedEvent(tire));
@@ -250,7 +257,17 @@ public class TpmsDevice {
             }
             // 换轮模式(ACK)
             case 0x05: {
+                byte tire1 = data[0];
+                byte tire2 = data[1];
+                TireStatus status1 = getTireStatus(tire1);
+                TireStatus status2 = getTireStatus(tire2);
+                TireStatus statusTemp = new TireStatus();
+                statusTemp.setValues(status1);
+                status1.setValues(status2);
+                status2.setValues(statusTemp);
                 removeCommands(cmd, data);
+
+                mEventBus.post(new TireStatusUpdatedEvent(TpmsDevice.TIRE_NONE));
                 break;
             }
             // 参数设置(ACK)
@@ -280,13 +297,16 @@ public class TpmsDevice {
         }
     }
 
+
     private class ReadThread extends Thread {
+
+        private boolean mRunning = true;
 
         public void run() {
             byte[] buffer = new byte[64];
 
             while (true) {
-                if (!mOpen) {
+                if (!mRunning) {
                     break;
                 }
 
@@ -301,8 +321,10 @@ public class TpmsDevice {
                     }
                 }
             }
+        }
 
-            mReadThread = null;
+        public void stopRunning() {
+            mRunning = false;
         }
     }
 

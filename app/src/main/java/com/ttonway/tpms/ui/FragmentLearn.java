@@ -6,7 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.common.eventbus.Subscribe;
 import com.ttonway.tpms.R;
@@ -28,8 +28,6 @@ public class FragmentLearn extends BaseFragment {
 
     @BindViews({R.id.board1, R.id.board3, R.id.board4, R.id.board2})
     List<LinearLayout> mBoards;
-    @BindViews({R.id.text1, R.id.text3, R.id.text4, R.id.text2})
-    List<TextView> mTextViews;
     private Unbinder mUnbinder;
 
     byte mMatchingTire = TpmsDevice.TIRE_NONE;
@@ -59,12 +57,7 @@ public class FragmentLearn extends BaseFragment {
                         mProgressDialog.dismissAllowingStateLoss();
                     }
 
-                    if (mTextViews == null || mTextViews.size() != 4) {
-                        return;
-                    }
-                    if (e.tire >= 0 && e.tire < mTextViews.size()) {
-                        mTextViews.get(e.tire).setText(e.value);
-                    }
+                    Toast.makeText(getActivity(), R.string.toast_learn_success, Toast.LENGTH_SHORT).show();
                 }
             });
         }

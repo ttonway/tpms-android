@@ -11,13 +11,11 @@ import com.ttonway.tpms.usb.TpmsDevice;
 public class BaseFragment extends Fragment {
 
     TpmsDevice getTpmeDevice() {
-        MainActivity activity = (MainActivity) getActivity();
-        return activity.mDevice;
+        return MainActivity.device;
     }
 
     EventBus getEventBus() {
-        MainActivity activity = (MainActivity) getActivity();
-        return activity.mEventBus;
+        return MainActivity.eventBus;
     }
 
     public final void runOnUiThread(Runnable action) {

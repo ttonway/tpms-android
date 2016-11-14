@@ -33,4 +33,16 @@ public class TireStatus {
                 battery + "mV[" + batteryStatus + "]" +
                 '}';
     }
+
+    public void setValues(TireStatus status) {
+        this.inited = status.inited;
+
+        this.pressureStatus = status.pressureStatus;
+        this.batteryStatus = status.batteryStatus;
+        this.temperatureStatus = status.temperatureStatus;
+
+        this.pressure = status.pressure;
+        this.battery = status.battery;
+        this.temperature = status.temperature;
+    }
 }

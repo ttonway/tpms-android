@@ -20,7 +20,9 @@ import android.widget.TabHost;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import com.iflytek.cloud.SpeechConstant;
+import com.iflytek.cloud.SpeechError;
 import com.iflytek.cloud.SpeechSynthesizer;
+import com.iflytek.cloud.SynthesizerListener;
 import com.ttonway.tpms.MyApp;
 import com.ttonway.tpms.R;
 import com.ttonway.tpms.SPManager;
@@ -67,9 +69,45 @@ public class MainActivity extends AppCompatActivity {
     TabManager mTabManager;
 
     SpeechSynthesizer mTTS;
+    SynthesizerListener mSpeakListener = new SynthesizerListener() {
+        @Override
+        public void onSpeakBegin() {
 
-    EventBus mEventBus;
-    TpmsDevice mDevice;
+        }
+
+        @Override
+        public void onBufferProgress(int i, int i1, int i2, String s) {
+
+        }
+
+        @Override
+        public void onSpeakPaused() {
+
+        }
+
+        @Override
+        public void onSpeakResumed() {
+
+        }
+
+        @Override
+        public void onSpeakProgress(int i, int i1, int i2) {
+
+        }
+
+        @Override
+        public void onCompleted(SpeechError speechError) {
+            Log.d(TAG, "onCompleted " + speechError);
+        }
+
+        @Override
+        public void onEvent(int i, int i1, int i2, Bundle bundle) {
+
+        }
+    };
+
+    static EventBus eventBus;
+    static TpmsDevice device;
 
     Object mReceiver = new Object() {
         @Subscribe
@@ -87,8 +125,8 @@ public class MainActivity extends AppCompatActivity {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    if (mVoiceBtn.isSelected() && mDevice != null) {
-                        TireStatus status = mDevice.getTireStatus(e.tire);
+                    if (mVoiceBtn.isSelected() && device != null && e.tire != TpmsDevice.TIRE_NONE) {
+                        TireStatus status = device.getTireStatus(e.tire);
                         speakAlert(e.tire, status);
                     }
                 }
@@ -141,7 +179,7 @@ public class MainActivity extends AppCompatActivity {
 
         String str = getResources().getString(id);
         Log.d(TAG, "speak " + str);
-        mTTS.startSpeaking(str, null);
+        mTTS.startSpeaking(str, mSpeakListener);
     }
 
     @Override
@@ -170,19 +208,28 @@ public class MainActivity extends AppCompatActivity {
 
         initTTS();
 
-        mEventBus = new EventBus();
-
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);// 保持常亮的屏幕的状态
-        MyApp.driver = new CH34xUARTDriver(
-                (UsbManager) getSystemService(Context.USB_SERVICE), this,
-                ACTION_USB_PERMISSION);
+        initTpmsDevice();
+    }
+
+    void initTpmsDevice() {
+        if (MyApp.driver == null) {
+            MyApp.driver = new CH34xUARTDriver(
+                    (UsbManager) getSystemService(Context.USB_SERVICE), this,
+                    ACTION_USB_PERMISSION);
+        }
+        if (eventBus == null) {
+            eventBus = new EventBus();
+        }
         if (!MyApp.driver.UsbFeatureSupported()) {// 判断系统是否支持USB HOST
             DialogAlert.showDialog(getSupportFragmentManager(), getString(R.string.alert_message_usb_host_unavailable));
         } else {
-            TpmsDevice device = new TpmsDevice(MyApp.driver, mEventBus);
+            if (device == null) {
+                device = new TpmsDevice(MyApp.driver, eventBus);
+            }
+
             if (device.openDevice()) {
                 device.querySettings();
-                mDevice = device;
             } else {
                 DialogAlert.showDialog(getSupportFragmentManager(), getString(R.string.alert_message_usb_io_error));
             }
@@ -203,14 +250,13 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        Log.d(TAG, "onResume");
 
-        mEventBus.register(mReceiver);
+        eventBus.register(mReceiver);
 
-        if (mDevice == null) {
-            TpmsDevice device = new TpmsDevice(MyApp.driver, mEventBus);
+        if (device != null && !device.isOpen()) {
             if (device.openDevice()) {
                 device.querySettings();
-                mDevice = device;
             }
         }
     }
@@ -218,11 +264,12 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
+        Log.d(TAG, "onPause");
 
-        mEventBus.unregister(mReceiver);
+        eventBus.unregister(mReceiver);
 
-        if (mDevice != null) {
-            mDevice.closeDevice();
+        if (device != null) {
+            device.closeDevice();
         }
     }
 
