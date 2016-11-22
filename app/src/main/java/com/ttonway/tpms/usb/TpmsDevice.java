@@ -1,9 +1,15 @@
 package com.ttonway.tpms.usb;
 
+import android.app.Activity;
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.hardware.usb.UsbManager;
 import android.os.Handler;
+import android.support.v4.app.Fragment;
 import android.util.Log;
 
 import com.google.common.eventbus.EventBus;
+import com.ttonway.tpms.TpmsApp;
 import com.ttonway.tpms.SPManager;
 
 import java.util.ArrayList;
@@ -19,15 +25,21 @@ import cn.wch.ch34xuartdriver.CH34xUARTDriver;
 public class TpmsDevice {
     private static final String TAG = TpmsDevice.class.getSimpleName();
 
+    private static final String ACTION_USB_PERMISSION = "cn.wch.wchusbdriver.USB_PERMISSION";
+
     public static final byte TIRE_NONE = Byte.MIN_VALUE;
     public static final byte TIRE_LEFT_FRONT = 0;
     public static final byte TIRE_RIGHT_FRONT = 1;
     public static final byte TIRE_RIGHT_END = 2;
     public static final byte TIRE_LEFT_END = 3;
 
+    private static TpmsDevice instance = null;
+
     CH34xUARTDriver mDriver;
     EventBus mEventBus;
+    SharedPreferences mPreferences;
 
+    final List<Object> mReceivers = new ArrayList<>();
 
     Handler mHandler = new Handler();
     ReadThread mReadThread;
@@ -35,17 +47,85 @@ public class TpmsDevice {
 
     final List<WriteCommand> mCommands = new ArrayList<>();
 
-    public float mPressureLowLimit = SPManager.PRESSURE_LOWER_LIMIT_DEFAULT;
-    public float mPressureHighLimit = SPManager.PRESSURE_UPPER_LIMIT_DEFAULT;
-    public int mTemperatureLimit = SPManager.TEMP_UPPER_LIMIT_DEFAULT;
-    public TireStatus mLeftFront = new TireStatus();
-    public TireStatus mRightFront = new TireStatus();
-    public TireStatus mRightEnd = new TireStatus();
-    public TireStatus mLeftEnd = new TireStatus();
+    public float mPressureLowLimit;
+    public float mPressureHighLimit;
+    public int mTemperatureLimit;
+    public TireStatus mLeftFront = new TireStatus("left-front");
+    public TireStatus mRightFront = new TireStatus("right-front");
+    public TireStatus mRightEnd = new TireStatus("right-end");
+    public TireStatus mLeftEnd = new TireStatus("left-end");
 
-    public TpmsDevice(CH34xUARTDriver driver, EventBus eventBus) {
-        this.mDriver = driver;
-        this.mEventBus = eventBus;
+    public static synchronized TpmsDevice getInstance(Context context) {
+        if (instance == null) {
+            instance = new TpmsDevice(context);
+        }
+        return instance;
+    }
+
+    private TpmsDevice(Context context) {
+        TpmsApp.driver = new CH34xUARTDriver(
+                (UsbManager) context.getSystemService(Context.USB_SERVICE), context.getApplicationContext(),
+                ACTION_USB_PERMISSION);
+        this.mDriver = TpmsApp.driver;
+        this.mEventBus = new EventBus();
+        this.mPreferences = context.getSharedPreferences("device", Context.MODE_PRIVATE);
+
+        mPressureLowLimit = mPreferences.getFloat("pressure-low-limit", SPManager.PRESSURE_LOWER_LIMIT_DEFAULT);
+        mPressureHighLimit = mPreferences.getFloat("pressure-high-limit", SPManager.PRESSURE_UPPER_LIMIT_DEFAULT);
+        mTemperatureLimit = mPreferences.getInt("temperature-high-limit", SPManager.TEMP_UPPER_LIMIT_DEFAULT);
+        readTireStatus(mPreferences, mLeftFront);
+        readTireStatus(mPreferences, mRightFront);
+        readTireStatus(mPreferences, mRightEnd);
+        readTireStatus(mPreferences, mLeftEnd);
+    }
+
+    void readTireStatus(SharedPreferences sp, TireStatus status) {
+        String prefix = status.name;
+        if (sp.contains(prefix + "-pressure-status")) {
+            status.inited = true;
+        } else {
+            status.inited = false;
+            return;
+        }
+        status.pressureStatus = sp.getInt(prefix + "-pressure-status", 0);
+        status.batteryStatus = sp.getInt(prefix + "-battery-status", 0);
+        status.temperatureStatus = sp.getInt(prefix + "-temperature-status", 0);
+        status.pressure = sp.getFloat(prefix + "-pressure", 0.f);
+        status.battery = sp.getInt(prefix + "-battery", 0);
+        status.temperature = sp.getInt(prefix + "-temperature", 0);
+    }
+
+    void writeTireStatus(SharedPreferences sp, TireStatus status) {
+        if (status.inited) {
+            String prefix = status.name;
+            sp.edit()
+                    .putInt(prefix + "-pressure-status", status.pressureStatus)
+                    .putInt(prefix + "-battery-status", status.batteryStatus)
+                    .putInt(prefix + "-temperature-status", status.temperatureStatus)
+                    .putFloat(prefix + "-pressure", status.pressure)
+                    .putInt(prefix + "-battery", status.battery)
+                    .putInt(prefix + "-temperature", status.temperature)
+                    .apply();
+        }
+    }
+
+    public void registerReceiver(Object object) {
+        mReceivers.add(object);
+        mEventBus.register(object);
+    }
+
+    public void unregisterReceiver(Object object) {
+        mReceivers.remove(object);
+        mEventBus.unregister(object);
+    }
+
+    public boolean hasForegroundReceiver() {
+        for (Object obj : mReceivers) {
+            if (obj instanceof Activity || obj instanceof Fragment) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public boolean openDevice() {
@@ -233,6 +313,8 @@ public class TpmsDevice {
                 }
                 status.battery = 100 * (int) battery;
 
+                writeTireStatus(mPreferences, status);
+
                 mEventBus.post(new TireStatusUpdatedEvent(tire));
                 break;
             }
@@ -261,11 +343,14 @@ public class TpmsDevice {
                 byte tire2 = data[1];
                 TireStatus status1 = getTireStatus(tire1);
                 TireStatus status2 = getTireStatus(tire2);
-                TireStatus statusTemp = new TireStatus();
+                TireStatus statusTemp = new TireStatus(null);
                 statusTemp.setValues(status1);
                 status1.setValues(status2);
                 status2.setValues(statusTemp);
                 removeCommands(cmd, data);
+
+                writeTireStatus(mPreferences, status1);
+                writeTireStatus(mPreferences, status2);
 
                 mEventBus.post(new TireStatusUpdatedEvent(TpmsDevice.TIRE_NONE));
                 break;
@@ -277,6 +362,12 @@ public class TpmsDevice {
                 mTemperatureLimit = (int) data[2];
                 removeCommands(cmd, data);
 
+                mPreferences.edit()
+                        .putFloat("pressure-low-limit", mPressureLowLimit)
+                        .putFloat("pressure-high-limit", mPressureHighLimit)
+                        .putInt("temperature-high-limit", mTemperatureLimit)
+                        .apply();
+
                 mEventBus.post(new SettingChangeEvent());
                 break;
             }
@@ -286,6 +377,12 @@ public class TpmsDevice {
                 mPressureHighLimit = 0.1f * (int) data[1];
                 mTemperatureLimit = (int) data[2];
                 removeCommands((byte) 0x07, new byte[0]);
+
+                mPreferences.edit()
+                        .putFloat("pressure-low-limit", mPressureLowLimit)
+                        .putFloat("pressure-high-limit", mPressureHighLimit)
+                        .putInt("temperature-high-limit", mTemperatureLimit)
+                        .apply();
 
                 mEventBus.post(new SettingChangeEvent());
                 break;

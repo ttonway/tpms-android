@@ -12,6 +12,5 @@
         android:gravity="center"
         android:singleLine="true"
         android:textColor="@color/text_green"
-        android:textSize="12sp" />
+        android:textSize="@dimen/text_normal" />
 </FrameLayout>
-

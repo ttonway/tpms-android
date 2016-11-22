@@ -15,6 +15,8 @@ public class TireStatus {
     public static final int TEMPERATURE_NORMAL = 0;
     public static final int TEMPERATURE_HIGH = 1;
 
+    public final String name;
+
     public boolean inited = false;
 
     public int pressureStatus;
@@ -24,6 +26,10 @@ public class TireStatus {
     public float pressure;//Bar
     public int battery;//mV
     public int temperature;//摄氏度
+
+    public TireStatus(String name) {
+        this.name = name;
+    }
 
     @Override
     public String toString() {

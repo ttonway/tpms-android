@@ -19,4 +19,9 @@
     <string name="voice_tire2_battery_low">左后轮电量不足</string>
     <string name="voice_tire3_battery_low">右前轮电量不足</string>
     <string name="voice_tire4_battery_low">右后轮电量不足</string>
+
+    <string name="voice_tire1_match_success">左前轮学习成功</string>
+    <string name="voice_tire2_match_success">左后轮学习成功</string>
+    <string name="voice_tire3_match_success">右前轮学习成功</string>
+    <string name="voice_tire4_match_success">右后轮学习成功</string>
 </resources>

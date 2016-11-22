@@ -7,6 +7,4 @@
 
     <color name="text_white">@color/common_white</color>
     <color name="text_green">@color/common_green</color>
-
-
 </resources>

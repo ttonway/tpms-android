@@ -87,9 +87,7 @@ public class FragmentExchange extends BaseFragment {
         byte tire2 = getTireIndex(mSelectedBorad2);
         if (tire1 != TpmsDevice.TIRE_NONE && tire2 != TpmsDevice.TIRE_NONE) {
             TpmsDevice device = getTpmeDevice();
-            if (device != null) {
-                device.exchangeTire(tire1, tire2);
-            }
+            device.exchangeTire(tire1, tire2);
         }
     }
 

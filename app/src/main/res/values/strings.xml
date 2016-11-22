@@ -37,6 +37,30 @@
     <string name="alert_message_usb_io_error">主机连接错误</string>
     <string name="alert_message_learn">胎压学习搜索中%1$s</string>
     <string name="alert_message_exchange">是否交换%1$s和%2$s</string>
-    <string name="toast_learn_success">学习成功</string>
+
+    <string name="alert_message_tire1_pressure_high">左前轮胎压过高</string>
+    <string name="alert_message_tire2_pressure_high">左后轮胎压过高</string>
+    <string name="alert_message_tire3_pressure_high">右前轮胎压过高</string>
+    <string name="alert_message_tire4_pressure_high">右后轮胎压过高</string>
+    <string name="alert_message_tire1_pressure_low">左前轮胎压过低</string>
+    <string name="alert_message_tire2_pressure_low">左后轮胎压过低</string>
+    <string name="alert_message_tire3_pressure_low">右前轮胎压过低</string>
+    <string name="alert_message_tire4_pressure_low">右后轮胎压过低</string>
+    <string name="alert_message_tire1_pressure_error">左前轮传感器失效</string>
+    <string name="alert_message_tire2_pressure_error">左后轮传感器失效</string>
+    <string name="alert_message_tire3_pressure_error">右前轮传感器失效</string>
+    <string name="alert_message_tire4_pressure_error">右后轮传感器失效</string>
+    <string name="alert_message_tire1_temp_high">左前轮温度过高</string>
+    <string name="alert_message_tire2_temp_high">左后轮温度过高</string>
+    <string name="alert_message_tire3_temp_high">右前轮温度过高</string>
+    <string name="alert_message_tire4_temp_high">右后轮温度过高</string>
+    <string name="alert_message_tire1_battery_low">左前轮电量不足</string>
+    <string name="alert_message_tire2_battery_low">左后轮电量不足</string>
+    <string name="alert_message_tire3_battery_low">右前轮电量不足</string>
+    <string name="alert_message_tire4_battery_low">右后轮电量不足</string>
+    <string name="alert_message_tire1_matched">左前轮学习成功</string>
+    <string name="alert_message_tire2_matched">左后轮学习成功</string>
+    <string name="alert_message_tire3_matched">右前轮学习成功</string>
+    <string name="alert_message_tire4_matched">右后轮学习成功</string>
 
 </resources>

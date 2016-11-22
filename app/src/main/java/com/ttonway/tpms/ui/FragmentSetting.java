@@ -46,29 +46,21 @@ public class FragmentSetting extends BaseFragment {
 
     private Unbinder mUnbinder;
 
-    Object mReceiver = new Object() {
-
-        @Subscribe
-        public void onSettingChanged(final SettingChangeEvent e) {
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    refreshUI();
-                }
-            });
-        }
-    };
+    @Subscribe
+    public void onSettingChanged(final SettingChangeEvent e) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                refreshUI();
+            }
+        });
+    }
 
     void refreshUI() {
-        float upperLimit = SPManager.PRESSURE_UPPER_LIMIT_DEFAULT;
-        float lowerLimit = SPManager.PRESSURE_LOWER_LIMIT_DEFAULT;
-        int upperLimit2 = SPManager.TEMP_UPPER_LIMIT_DEFAULT;
         TpmsDevice device = getTpmeDevice();
-        if (device != null) {
-            upperLimit = device.mPressureHighLimit;
-            lowerLimit = device.mPressureLowLimit;
-            upperLimit2 = device.mTemperatureLimit;
-        }
+        float upperLimit = device.mPressureHighLimit;
+        float lowerLimit = device.mPressureLowLimit;
+        int upperLimit2 = device.mTemperatureLimit;
 
         mSeekBarUpperLimit.setProgress((int) ((upperLimit - SPManager.PRESSURE_UPPER_LIMIT_MIN) / SPManager.PRESSURE_UPPER_LIMIT_RANGE * 100));
         mSeekBarLowerLimit.setProgress((int) ((lowerLimit - SPManager.PRESSURE_LOWER_LIMIT_MIN) / SPManager.PRESSURE_LOWER_LIMIT_RANGE * 100));
@@ -198,7 +190,7 @@ public class FragmentSetting extends BaseFragment {
         setupProgressLabels();
         refreshUI();
 
-        getEventBus().register(mReceiver);
+        getTpmeDevice().registerReceiver(this);
     }
 
     void setupProgressLabels() {
@@ -236,8 +228,9 @@ public class FragmentSetting extends BaseFragment {
         float bar2 = SPManager.PRESSURE_LOWER_LIMIT_MIN + (float) mSeekBarLowerLimit.getProgress() / 100 * SPManager.PRESSURE_LOWER_LIMIT_RANGE;
         int degree = (int) (SPManager.TEMP_UPPER_LIMIT_MIN + (float) mSeekBarTempUpperLimit.getProgress() / 100 * SPManager.TEMP_UPPER_LIMIT_RANGE + .5f);
 
+
         TpmsDevice device = getTpmeDevice();
-        if (device != null) {
+        if (bar2 != device.mPressureLowLimit || bar1 != device.mPressureHighLimit || degree != device.mTemperatureLimit) {
             device.saveSettings(bar2, bar1, degree);
         }
     }
@@ -247,6 +240,6 @@ public class FragmentSetting extends BaseFragment {
         super.onDestroyView();
         mUnbinder.unbind();
 
-        getEventBus().unregister(mReceiver);
+        getTpmeDevice().unregisterReceiver(this);
     }
 }

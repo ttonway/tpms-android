@@ -44,7 +44,9 @@ public class DialogLearn extends BaseDialogFragment {
     public void onDismiss(DialogInterface dialog) {
         super.onDismiss(dialog);
 
-        mTextView.removeCallbacks(mTimeoutRunnable);
+        if (mTextView != null) {
+            mTextView.removeCallbacks(mTimeoutRunnable);
+        }
 
         FragmentLearn frag = (FragmentLearn) getParentFragment();
         frag.cancelTireMatch();

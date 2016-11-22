@@ -19,4 +19,9 @@
     <string name="voice_tire2_battery_low">left end wheel battery low</string>
     <string name="voice_tire3_battery_low">right front wheel battery low</string>
     <string name="voice_tire4_battery_low">right end wheel battery low</string>
+
+    <string name="voice_tire1_match_success">left front wheel matched success</string>
+    <string name="voice_tire2_match_success">left end wheel matched success</string>
+    <string name="voice_tire3_match_success">right front wheel matched success</string>
+    <string name="voice_tire4_match_success">right end wheel matched success</string>
 </resources>

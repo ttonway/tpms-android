@@ -42,18 +42,15 @@ public class FragmentMonitor extends BaseFragment {
 
     public static final String NO_VALUE = "---";
 
-    Object mReceiver = new Object() {
-
-        @Subscribe
-        public void onStatusUpdated(final TireStatusUpdatedEvent e) {
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    refreshUI();
-                }
-            });
-        }
-    };
+    @Subscribe
+    public void onStatusUpdated(final TireStatusUpdatedEvent e) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                refreshUI();
+            }
+        });
+    }
 
     void refreshUI() {
         if (mBoards == null || mBoards.size() != 4) {
@@ -62,7 +59,7 @@ public class FragmentMonitor extends BaseFragment {
 
         TpmsDevice device = getTpmeDevice();
         for (byte tire = TpmsDevice.TIRE_LEFT_FRONT; tire <= TpmsDevice.TIRE_LEFT_END; tire++) {
-            TireStatus tireStatus = device == null ? null : device.getTireStatus(tire);
+            TireStatus tireStatus = device.getTireStatus(tire);
             LinearLayout board = mBoards.get(tire);
             TextView pressureText = mPressureTextViews.get(tire);
             TextView tempText = mTempTextViews.get(tire);
@@ -85,7 +82,15 @@ public class FragmentMonitor extends BaseFragment {
                 pressureText.setSelected(tireStatus.pressureStatus != TireStatus.PRESSURE_NORMAL);
                 tempText.setText(Utils.formatTemperature(getActivity(), tireStatus.temperature));
                 tempText.setSelected(tireStatus.temperatureStatus != TireStatus.TEMPERATURE_NORMAL);
-                batteryImage.getDrawable().setLevel((6 * tireStatus.battery / 25500) % 6);//level 0-5
+                if (tireStatus.battery < 2500) {
+                    batteryImage.getDrawable().setLevel(0);
+                } else if (tireStatus.battery < 2700) {
+                    batteryImage.getDrawable().setLevel(1);
+                } else if (tireStatus.battery < 2800) {
+                    batteryImage.getDrawable().setLevel(2);
+                } else {
+                    batteryImage.getDrawable().setLevel(3);
+                }
                 batteryImage.setSelected(tireStatus.batteryStatus != TireStatus.BATTERY_NORMAL);
             }
         }
@@ -115,7 +120,7 @@ public class FragmentMonitor extends BaseFragment {
             imageView.setImageDrawable(wrappedDrawable);
         }
 
-        getEventBus().register(mReceiver);
+        getTpmeDevice().registerReceiver(this);
 
         refreshUI();
     }
@@ -125,6 +130,6 @@ public class FragmentMonitor extends BaseFragment {
         super.onDestroyView();
         mUnbinder.unbind();
 
-        getEventBus().unregister(mReceiver);
+        getTpmeDevice().unregisterReceiver(this);
     }
 }

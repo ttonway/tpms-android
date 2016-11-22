@@ -2,7 +2,8 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:padding="@dimen/page_padding">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -18,13 +19,10 @@
             android:orientation="horizontal">
 
             <TextView
+                style="@style/SettingLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="4dp"
-                android:minWidth="80dp"
-                android:text="@string/label_language"
-                android:textColor="@color/text_green"
-                android:textSize="14sp" />
+                android:text="@string/label_language" />
 
             <RadioButton
                 android:id="@+id/language_simplified_chinese"
@@ -56,13 +54,10 @@
             android:orientation="horizontal">
 
             <TextView
+                style="@style/SettingLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="4dp"
-                android:minWidth="80dp"
-                android:text="@string/label_unit"
-                android:textColor="@color/text_green"
-                android:textSize="14sp" />
+                android:text="@string/label_unit" />
 
             <RadioButton
                 android:id="@+id/unit_bar"
@@ -101,13 +96,10 @@
             android:orientation="horizontal">
 
             <TextView
+                style="@style/SettingLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="4dp"
-                android:minWidth="80dp"
-                android:text="@string/label_degree"
-                android:textColor="@color/text_green"
-                android:textSize="14sp" />
+                android:text="@string/label_degree" />
 
             <RadioButton
                 android:id="@+id/degree_celsius"
@@ -131,20 +123,15 @@
             android:paddingTop="16dp">
 
             <TextView
+                style="@style/SettingLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="4dp"
-                android:minWidth="80dp"
-                android:text="@string/label_pressure_max"
-                android:textColor="@color/text_green"
-                android:textSize="14sp" />
+                android:text="@string/label_pressure_max" />
 
             <io.techery.progresshint.addition.widget.SeekBar
                 android:id="@+id/pressure_upper_limit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:maxHeight="30dp"
-                android:minHeight="30dp"
                 android:progressDrawable="@drawable/seekbar_progress"
                 android:thumb="@drawable/seekbar_thumb"
                 app:popupAlwaysShown="true"
@@ -160,20 +147,15 @@
             android:paddingTop="16dp">
 
             <TextView
+                style="@style/SettingLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="4dp"
-                android:minWidth="80dp"
-                android:text="@string/label_pressure_min"
-                android:textColor="@color/text_green"
-                android:textSize="14sp" />
+                android:text="@string/label_pressure_min" />
 
             <io.techery.progresshint.addition.widget.SeekBar
                 android:id="@+id/pressure_lower_limit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:maxHeight="30dp"
-                android:minHeight="30dp"
                 android:progressDrawable="@drawable/seekbar_progress"
                 android:thumb="@drawable/seekbar_thumb"
                 app:popupAlwaysShown="true"
@@ -189,20 +171,15 @@
             android:paddingTop="16dp">
 
             <TextView
+                style="@style/SettingLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="4dp"
-                android:minWidth="80dp"
-                android:text="@string/label_temperature_max"
-                android:textColor="@color/text_green"
-                android:textSize="14sp" />
+                android:text="@string/label_temperature_max" />
 
             <io.techery.progresshint.addition.widget.SeekBar
                 android:id="@+id/temp_upper_limit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:maxHeight="30dp"
-                android:minHeight="30dp"
                 android:progressDrawable="@drawable/seekbar_progress"
                 android:thumb="@drawable/seekbar_thumb"
                 app:popupAlwaysShown="true"

@@ -2,7 +2,6 @@ package com.ttonway.tpms.ui;
 
 import android.support.v4.app.Fragment;
 
-import com.google.common.eventbus.EventBus;
 import com.ttonway.tpms.usb.TpmsDevice;
 
 /**
@@ -11,11 +10,7 @@ import com.ttonway.tpms.usb.TpmsDevice;
 public class BaseFragment extends Fragment {
 
     TpmsDevice getTpmeDevice() {
-        return MainActivity.device;
-    }
-
-    EventBus getEventBus() {
-        return MainActivity.eventBus;
+        return TpmsDevice.getInstance(getActivity());
     }
 
     public final void runOnUiThread(Runnable action) {

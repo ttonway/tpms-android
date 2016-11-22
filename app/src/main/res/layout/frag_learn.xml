@@ -26,10 +26,10 @@
 
         <LinearLayout
             android:id="@+id/board1"
+            style="@style/TireBorad"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/left_board"
-            android:gravity="center"
             android:orientation="vertical">
 
             <TextView
@@ -37,7 +37,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/btn_tire1_match"
                 android:textColor="@color/board_content_tintcolor"
-                android:textSize="14sp" />
+                android:textSize="@dimen/text_large" />
 
         </LinearLayout>
 
@@ -48,10 +48,10 @@
 
         <LinearLayout
             android:id="@+id/board2"
+            style="@style/TireBorad"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/left_board"
-            android:gravity="center"
             android:orientation="vertical">
 
             <TextView
@@ -59,7 +59,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/btn_tire2_match"
                 android:textColor="@color/board_content_tintcolor"
-                android:textSize="14sp" />
+                android:textSize="@dimen/text_large" />
 
         </LinearLayout>
 
@@ -84,10 +84,10 @@
 
         <LinearLayout
             android:id="@+id/board3"
+            style="@style/TireBorad"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/right_board"
-            android:gravity="center"
             android:orientation="vertical">
 
             <TextView
@@ -95,7 +95,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/btn_tire3_match"
                 android:textColor="@color/board_content_tintcolor"
-                android:textSize="14sp" />
+                android:textSize="@dimen/text_large" />
 
         </LinearLayout>
 
@@ -106,10 +106,10 @@
 
         <LinearLayout
             android:id="@+id/board4"
+            style="@style/TireBorad"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/right_board"
-            android:gravity="center"
             android:orientation="vertical">
 
             <TextView
@@ -117,7 +117,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/btn_tire4_match"
                 android:textColor="@color/board_content_tintcolor"
-                android:textSize="14sp" />
+                android:textSize="@dimen/text_large" />
 
         </LinearLayout>
 

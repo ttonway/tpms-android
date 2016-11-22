@@ -26,10 +26,10 @@
 
         <LinearLayout
             android:id="@+id/board1"
+            style="@style/TireBorad"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/left_board"
-            android:gravity="center_horizontal"
             android:orientation="vertical">
 
             <ImageView
@@ -37,6 +37,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="right"
+                android:paddingBottom="2dp"
+                android:paddingRight="@dimen/battery_padding_right"
                 android:src="@drawable/battery" />
 
             <TextView
@@ -45,7 +47,7 @@
                 android:layout_height="wrap_content"
                 android:text="p"
                 android:textColor="@color/board_content_tintcolor"
-                android:textSize="14sp" />
+                android:textSize="@dimen/text_large" />
 
             <TextView
                 android:id="@+id/temperature1"
@@ -53,7 +55,7 @@
                 android:layout_height="wrap_content"
                 android:text="temp"
                 android:textColor="@color/board_content_tintcolor"
-                android:textSize="14sp" />
+                android:textSize="@dimen/text_large" />
         </LinearLayout>
 
         <View
@@ -63,10 +65,10 @@
 
         <LinearLayout
             android:id="@+id/board2"
+            style="@style/TireBorad"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/left_board"
-            android:gravity="center_horizontal"
             android:orientation="vertical">
 
             <ImageView
@@ -74,6 +76,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="right"
+                android:paddingBottom="2dp"
+                android:paddingRight="@dimen/battery_padding_right"
                 android:src="@drawable/battery" />
 
             <TextView
@@ -82,7 +86,7 @@
                 android:layout_height="wrap_content"
                 android:text="p"
                 android:textColor="@color/board_content_tintcolor"
-                android:textSize="14sp" />
+                android:textSize="@dimen/text_large" />
 
             <TextView
                 android:id="@+id/temperature2"
@@ -90,7 +94,7 @@
                 android:layout_height="wrap_content"
                 android:text="temp"
                 android:textColor="@color/board_content_tintcolor"
-                android:textSize="14sp" />
+                android:textSize="@dimen/text_large" />
         </LinearLayout>
 
         <View
@@ -114,10 +118,10 @@
 
         <LinearLayout
             android:id="@+id/board3"
+            style="@style/TireBorad"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/right_board"
-            android:gravity="center_horizontal"
             android:orientation="vertical">
 
             <ImageView
@@ -125,6 +129,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="right"
+                android:paddingBottom="2dp"
+                android:paddingRight="@dimen/battery_padding_right"
                 android:src="@drawable/battery" />
 
             <TextView
@@ -133,7 +139,7 @@
                 android:layout_height="wrap_content"
                 android:text="p"
                 android:textColor="@color/board_content_tintcolor"
-                android:textSize="14sp" />
+                android:textSize="@dimen/text_large" />
 
             <TextView
                 android:id="@+id/temperature3"
@@ -141,7 +147,7 @@
                 android:layout_height="wrap_content"
                 android:text="temp"
                 android:textColor="@color/board_content_tintcolor"
-                android:textSize="14sp" />
+                android:textSize="@dimen/text_large" />
         </LinearLayout>
 
         <View
@@ -151,10 +157,10 @@
 
         <LinearLayout
             android:id="@+id/board4"
+            style="@style/TireBorad"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/right_board"
-            android:gravity="center_horizontal"
             android:orientation="vertical">
 
             <ImageView
@@ -162,6 +168,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="right"
+                android:paddingBottom="2dp"
+                android:paddingRight="@dimen/battery_padding_right"
                 android:src="@drawable/battery" />
 
             <TextView
@@ -170,7 +178,7 @@
                 android:layout_height="wrap_content"
                 android:text="p"
                 android:textColor="@color/board_content_tintcolor"
-                android:textSize="14sp" />
+                android:textSize="@dimen/text_large" />
 
             <TextView
                 android:id="@+id/temperature4"
@@ -178,7 +186,7 @@
                 android:layout_height="wrap_content"
                 android:text="temp"
                 android:textColor="@color/board_content_tintcolor"
-                android:textSize="14sp" />
+                android:textSize="@dimen/text_large" />
         </LinearLayout>
 
         <View

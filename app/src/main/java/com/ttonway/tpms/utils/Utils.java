@@ -128,9 +128,9 @@ public class Utils {
             case SPManager.UNIT_BAR:
                 return String.format("%.1f%s", bar, context.getString(R.string.unit_bar));
             case SPManager.UNIT_PSI:
-                return String.format("%.1f%s", (bar / 14.5f), context.getString(R.string.unit_psi));
+                return String.format("%.1f%s", (bar * 14.5f), context.getString(R.string.unit_psi));
             case SPManager.UNIT_KPA:
-                return String.format("%.1f%s", (bar - 100) / 100, context.getString(R.string.unit_kpa));
+                return String.format("%.1f%s", bar * 100, context.getString(R.string.unit_kpa));
             case SPManager.UNIT_KG:
                 return String.format("%.1f%s", bar, context.getString(R.string.unit_kg));
         }
