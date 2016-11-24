@@ -33,6 +33,12 @@ public class TpmsDevice {
     public static final byte TIRE_RIGHT_END = 2;
     public static final byte TIRE_LEFT_END = 3;
 
+    public static final byte CMD_START_TIRE_MATCH = (byte) 0x02;
+    public static final byte CMD_STOP_TIRE_MATCH = (byte) 0x03;
+    public static final byte CMD_EXCHANGE_TIRE = (byte) 0x05;
+    public static final byte CMD_SAVE_SETTING = (byte) 0x06;
+    public static final byte CMD_QUERY_SETTING = (byte) 0x07;
+
     private static TpmsDevice instance = null;
 
     CH34xUARTDriver mDriver;
@@ -249,15 +255,15 @@ public class TpmsDevice {
     }
 
     public void startTireMatch(byte tire) {
-        postCommand(new WriteCommand((byte) 0x02, new byte[]{tire}));
+        postCommand(new WriteCommand(CMD_START_TIRE_MATCH, new byte[]{tire}));
     }
 
     public void stopTireMatch() {
-        postCommand(new WriteCommand((byte) 0x03, new byte[0]));
+        postCommand(new WriteCommand(CMD_STOP_TIRE_MATCH, new byte[0]));
     }
 
     public void exchangeTire(byte tire1, byte tire2) {
-        postCommand(new WriteCommand((byte) 0x05, new byte[]{tire1, tire2}));
+        postCommand(new WriteCommand(CMD_EXCHANGE_TIRE, new byte[]{tire1, tire2}));
     }
 
     public void saveSettings(float lowLimit, float highLimit, int tempLimit) {
@@ -265,11 +271,11 @@ public class TpmsDevice {
         buf[0] = (byte) (lowLimit / 0.1f);
         buf[1] = (byte) (highLimit / 0.1f);
         buf[2] = (byte) tempLimit;
-        postCommand(new WriteCommand((byte) 0x06, buf));
+        postCommand(new WriteCommand(CMD_SAVE_SETTING, buf));
     }
 
     public void querySettings() {
-        postCommand(new WriteCommand((byte) 0x07, new byte[0]));
+        postCommand(new WriteCommand(CMD_QUERY_SETTING, new byte[0], -1, 2000));
     }
 
     private void onReadData(byte[] buf, int length) {
@@ -498,25 +504,35 @@ public class TpmsDevice {
 
         int tryCount = 0;
 
+        final int maxCount;
+        final long delay;
+
         public WriteCommand(byte command, byte[] data) {
+            this(command, data, 3, 1000);
+        }
+
+        public WriteCommand(byte command, byte[] data, int maxCount, long delay) {
             this.command = command;
             this.data = data;
+            this.maxCount = maxCount;
+            this.delay = delay;
         }
 
         @Override
         public void run() {
-            if (tryCount < 3) {
+            if (maxCount == -1 || tryCount < maxCount) {
                 tryCount++;
                 if (writeData(this.command, this.data)) {
-                    mHandler.postDelayed(this, 1000);
+                    mHandler.postDelayed(this, delay);
                 } else {
                     Log.e(TAG, "writeData fail.");
-                    removeCommand(this);
-                    mEventBus.post(new TimeoutEvent());
+//                    removeCommand(this);
+//                    mEventBus.post(new TimeoutEvent());
+                    mHandler.postDelayed(this, delay);
                 }
             } else {
                 removeCommand(this);
-                mEventBus.post(new TimeoutEvent());
+                mEventBus.post(new TimeoutEvent(this.command));
             }
         }
     }

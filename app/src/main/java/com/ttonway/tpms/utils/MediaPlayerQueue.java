@@ -60,7 +60,7 @@ public class MediaPlayerQueue {
     }
 
     public void addresource(int resource) {
-        if (!SPManager.getBoolean(mContext, SPManager.KEY_VOICE_OPEN, false)) {
+        if (!SPManager.getBoolean(mContext, SPManager.KEY_VOICE_OPEN, true)) {
             Log.w(TAG, "voice closed");
             return;
         }

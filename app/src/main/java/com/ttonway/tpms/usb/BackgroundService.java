@@ -48,10 +48,13 @@ public class BackgroundService extends Service {
 
 
     @Subscribe
-    public void onTimeout(TimeoutEvent e) {
+    public void onTimeout(final TimeoutEvent e) {
         mHandler.post(new Runnable() {
             @Override
             public void run() {
+                if (e.command == TpmsDevice.CMD_QUERY_SETTING && !device.hasForegroundReceiver()) {
+                    return;
+                }
                 showAlertMessage(getString(R.string.alert_message_usb_io_error));
             }
         });

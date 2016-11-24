@@ -114,12 +114,17 @@ public class MainActivity extends AppCompatActivity {
                 device.querySettings();
             }
         }
+
+        // register foreground receiver to judge app running in background or foreground
+        device.registerReceiver(this);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         Log.d(TAG, "onPause");
+
+        device.unregisterReceiver(this);
     }
 
     @Override
