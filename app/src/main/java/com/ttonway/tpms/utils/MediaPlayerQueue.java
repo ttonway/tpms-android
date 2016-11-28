@@ -72,6 +72,7 @@ public class MediaPlayerQueue {
             Log.e(TAG, "too much resources in the queue");
             return;
         }
+        Log.d(TAG, "addresource success");
         mResources.add(resource);
         readyPlayer();
     }

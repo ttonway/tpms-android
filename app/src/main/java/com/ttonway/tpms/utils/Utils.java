@@ -1,17 +1,24 @@
 package com.ttonway.tpms.utils;
 
 import android.annotation.TargetApi;
+import android.app.ActivityManager;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.StrictMode;
+import android.util.DisplayMetrics;
 import android.util.Log;
 
 import com.ttonway.tpms.R;
 import com.ttonway.tpms.SPManager;
+
+import java.util.List;
+import java.util.Locale;
 
 /**
  * Created with IntelliJ IDEA.
@@ -147,5 +154,29 @@ public class Utils {
                 return String.format("%d%s", (celsiusDegree * 9 / 5 + 32), context.getString(R.string.degree_fahrenheit));
         }
         return null;
+    }
+
+    public static void setupLocale(Context context) {
+        Locale locale = SPManager.getCurrentLocale(context);
+        Resources resources = context.getResources();
+        DisplayMetrics dm = resources.getDisplayMetrics();
+        Configuration config = resources.getConfiguration();
+        config.locale = locale;
+        resources.updateConfiguration(config, dm);
+    }
+
+    public static boolean isBackground(Context context) {
+        ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+        List<ActivityManager.RunningAppProcessInfo> appProcesses = activityManager.getRunningAppProcesses();
+        for (ActivityManager.RunningAppProcessInfo appProcess : appProcesses) {
+            if (appProcess.processName.equals(context.getPackageName())) {
+                if (appProcess.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_BACKGROUND) {
+                    return true;
+                }else{
+                    return false;
+                }
+            }
+        }
+        return false;
     }
 }

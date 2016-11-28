@@ -15,6 +15,7 @@
     <string name="btn_tire2_match">左後輪學習</string>
     <string name="btn_tire3_match">右前輪學習</string>
     <string name="btn_tire4_match">右後輪學習</string>
+    <string name="notification_service_running">TPMS正在運行</string>
 
     <string name="label_language">語言</string>
     <string name="label_unit">壓力單位</string>

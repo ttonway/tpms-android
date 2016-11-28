@@ -1,11 +1,9 @@
 package com.ttonway.tpms.usb;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.hardware.usb.UsbManager;
 import android.os.Handler;
-import android.support.v4.app.Fragment;
 import android.util.Log;
 
 import com.google.common.eventbus.EventBus;
@@ -44,8 +42,6 @@ public class TpmsDevice {
     CH34xUARTDriver mDriver;
     EventBus mEventBus;
     SharedPreferences mPreferences;
-
-    final List<Object> mReceivers = new ArrayList<>();
 
     Handler mHandler = new Handler();
     ReadThread mReadThread;
@@ -116,22 +112,11 @@ public class TpmsDevice {
     }
 
     public void registerReceiver(Object object) {
-        mReceivers.add(object);
         mEventBus.register(object);
     }
 
     public void unregisterReceiver(Object object) {
-        mReceivers.remove(object);
         mEventBus.unregister(object);
-    }
-
-    public boolean hasForegroundReceiver() {
-        for (Object obj : mReceivers) {
-            if (obj instanceof Activity || obj instanceof Fragment) {
-                return true;
-            }
-        }
-        return false;
     }
 
     public boolean openDevice() {
@@ -168,6 +153,9 @@ public class TpmsDevice {
 
         this.mReadThread = new ReadThread();
         this.mReadThread.start();
+
+        querySettings();
+
         mOpen = true;
         return true;
     }
@@ -274,8 +262,8 @@ public class TpmsDevice {
         postCommand(new WriteCommand(CMD_SAVE_SETTING, buf));
     }
 
-    public void querySettings() {
-        postCommand(new WriteCommand(CMD_QUERY_SETTING, new byte[0], -1, 2000));
+    private void querySettings() {
+        postCommand(new WriteCommand(CMD_QUERY_SETTING, new byte[0], 6000));
     }
 
     private void onReadData(byte[] buf, int length) {
@@ -298,7 +286,7 @@ public class TpmsDevice {
         }
 
         byte cmd = buf[2];
-        byte[] data = Arrays.copyOfRange(buf, 3, length - 2);
+        final byte[] data = Arrays.copyOfRange(buf, 3, length - 2);
         switch (cmd) {
             // 数据帧
             case 0x01: {
@@ -382,7 +370,13 @@ public class TpmsDevice {
                 mPressureLowLimit = 0.1f * (int) data[0];
                 mPressureHighLimit = 0.1f * (int) data[1];
                 mTemperatureLimit = (int) data[2];
-                removeCommands((byte) 0x07, new byte[0]);
+                removeCommands(CMD_QUERY_SETTING, new byte[0]);
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        writeData((byte) 0x08, data);
+                    }
+                });
 
                 mPreferences.edit()
                         .putFloat("pressure-low-limit", mPressureLowLimit)
@@ -503,24 +497,30 @@ public class TpmsDevice {
         byte[] data;
 
         int tryCount = 0;
-
-        final int maxCount;
         final long delay;
 
         public WriteCommand(byte command, byte[] data) {
-            this(command, data, 3, 1000);
+            this(command, data, 1000);
         }
 
-        public WriteCommand(byte command, byte[] data, int maxCount, long delay) {
+        public WriteCommand(byte command, byte[] data, long delay) {
             this.command = command;
             this.data = data;
-            this.maxCount = maxCount;
             this.delay = delay;
         }
 
         @Override
         public void run() {
-            if (maxCount == -1 || tryCount < maxCount) {
+            if (this.command == CMD_QUERY_SETTING) {
+                tryCount++;
+                mHandler.postDelayed(this, delay);
+                if (tryCount > 1) {
+                    mEventBus.post(new TimeoutEvent(this.command));
+                }
+                return;
+            }
+
+            if (tryCount < 3) {
                 tryCount++;
                 if (writeData(this.command, this.data)) {
                     mHandler.postDelayed(this, delay);

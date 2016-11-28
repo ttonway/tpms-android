@@ -1,13 +1,10 @@
 package com.ttonway.tpms.ui;
 
-import android.content.res.Configuration;
-import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.Nullable;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
@@ -20,9 +17,8 @@ import com.ttonway.tpms.R;
 import com.ttonway.tpms.SPManager;
 import com.ttonway.tpms.usb.BackgroundService;
 import com.ttonway.tpms.usb.TpmsDevice;
+import com.ttonway.tpms.utils.Utils;
 import com.ttonway.tpms.widget.TabManager;
-
-import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -65,12 +61,7 @@ public class MainActivity extends AppCompatActivity {
 //        DisplayMetrics metrics = getResources().getDisplayMetrics();
 //        Toast.makeText(this, metrics.toString(), Toast.LENGTH_LONG).show();
 
-        Locale locale = SPManager.getCurrentLocale(this);
-        Resources resources = getResources();
-        DisplayMetrics dm = resources.getDisplayMetrics();
-        Configuration config = resources.getConfiguration();
-        config.locale = locale;
-        resources.updateConfiguration(config, dm);
+        Utils.setupLocale(this);
 
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
@@ -97,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
             DialogAlert.showDialog(getSupportFragmentManager(), getString(R.string.alert_message_usb_host_unavailable));
         } else {
             if (device.openDevice()) {
-                device.querySettings();
+                //device.querySettings();
             } else {
                 DialogAlert.showDialog(getSupportFragmentManager(), getString(R.string.alert_message_usb_io_error));
             }
@@ -111,7 +102,7 @@ public class MainActivity extends AppCompatActivity {
 
         if (!device.isOpen()) {
             if (device.openDevice()) {
-                device.querySettings();
+                //device.querySettings();
             }
         }
 
@@ -131,6 +122,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         Log.d(TAG, "onDestroy");
+
+        BackgroundService.startService(this);
     }
 
     private void initTabHost() {

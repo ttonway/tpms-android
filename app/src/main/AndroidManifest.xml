@@ -68,7 +68,7 @@
             </intent-filter>
         </service>
 
-        <receiver android:name=".usb.BootReceiver">
+        <receiver android:name=".usb.TpmsBootReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <category android:name="android.intent.category.LAUNCHER" />

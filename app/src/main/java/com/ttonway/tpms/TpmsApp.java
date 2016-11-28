@@ -11,6 +11,7 @@ import com.iflytek.cloud.SpeechConstant;
 import com.iflytek.cloud.SpeechUtility;
 import com.ttonway.tpms.usb.BackgroundService;
 import com.ttonway.tpms.usb.TpmsDevice;
+import com.ttonway.tpms.utils.Utils;
 
 import java.io.File;
 import java.io.IOException;
@@ -39,6 +40,8 @@ public class TpmsApp extends Application {
         Log.i(TAG, "onCreate");
 
         saveLogcatToFile(this);
+
+        Utils.setupLocale(this);
 
         SpeechUtility.createUtility(this, SpeechConstant.APPID + "=58228f78");
 
