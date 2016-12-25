@@ -6,6 +6,7 @@
     <string name="tab_setting">設置</string>
     <string name="btn_ok">確定</string>
     <string name="btn_cancel">取消</string>
+    <string name="btn_reset">恢復出廠設置</string>
     <string name="btn_voice">聲音</string>
     <string name="btn_tire1">左前輪</string>
     <string name="btn_tire2">左後輪</string>

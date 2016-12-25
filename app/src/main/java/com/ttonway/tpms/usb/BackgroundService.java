@@ -26,6 +26,9 @@ import com.ttonway.tpms.utils.AlertHelper;
 import com.ttonway.tpms.utils.MediaPlayerQueue;
 import com.ttonway.tpms.utils.Utils;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by ttonway on 2016/11/21.
  */
@@ -35,7 +38,8 @@ public class BackgroundService extends Service {
     public static final String ACTION_START = "com.ttonway.tpms.ACTION_START_TMPS";
 
     public static void startService(Context context) {
-        context.startService(new Intent(ACTION_START));
+        Intent intent = new Intent(context, BackgroundService.class);
+        context.startService(intent);
     }
 
     public static boolean isServiceRunning(Context context) {
@@ -53,16 +57,45 @@ public class BackgroundService extends Service {
 
     TpmsDevice device;
 
+    List<Dialog> mTimeoutDialogs = new ArrayList<>();
+
 
     @Subscribe
     public void onTimeout(final TimeoutEvent e) {
         mHandler.post(new Runnable() {
             @Override
             public void run() {
-                if (e.command == TpmsDevice.CMD_QUERY_SETTING && Utils.isBackground(BackgroundService.this)) {
+                if (e.command == TpmsDevice.CMD_QUERY_SETTING && !Utils.isAppOnForeground(BackgroundService.this)) {
                     return;
                 }
-                showAlertMessage(getString(R.string.alert_message_usb_io_error));
+                final Dialog dialog = showAlertMessage(getString(R.string.alert_message_usb_io_error));
+                if (e.command == TpmsDevice.CMD_QUERY_SETTING) {
+                    Log.d(TAG, "add timeout dialog " + dialog);
+                    mTimeoutDialogs.add(dialog);
+                    mHandler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            mTimeoutDialogs.remove(dialog);
+                            dialog.dismiss();
+                        }
+                    }, 3000);
+                }
+            }
+        });
+    }
+
+    @Subscribe
+    public void onSettingChanged(final SettingChangeEvent e) {
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                if (e.command == TpmsDevice.CMD_QUERY_SETTING) {
+                    Log.d(TAG, "dismiss timeout dialogs " + mTimeoutDialogs);
+                    for (Dialog dialog : mTimeoutDialogs) {
+                        dialog.dismiss();
+                    }
+                    mTimeoutDialogs.clear();
+                }
             }
         });
     }
@@ -81,7 +114,7 @@ public class BackgroundService extends Service {
                             MediaPlayerQueue.getInstance().addresource(id.intValue());
                         }
 
-                        if (!Utils.isBackground(BackgroundService.this)) {
+                        if (Utils.isAppOnForeground(BackgroundService.this)) {
                             return;
                         }
 
@@ -150,7 +183,7 @@ public class BackgroundService extends Service {
         return builder.build();
     }
 
-    void showAlertMessage(String message) {
+    Dialog showAlertMessage(String message) {
         Log.d(TAG, "showAlertMessage " + message);
         final Dialog dialog = new Dialog(this, R.style.CustomDialog);
         View view = LayoutInflater.from(this).inflate(R.layout.dialog_custom, null, false);
@@ -189,6 +222,7 @@ public class BackgroundService extends Service {
 //                .setContentText(message)
 //                .setContentIntent(pendingIntent);
 //        mNotificationManager.notify(R.id.service_notification, builder.build());
+        return dialog;
     }
 
     @Nullable

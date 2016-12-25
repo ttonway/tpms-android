@@ -97,6 +97,12 @@ public class SPManager {
         sp.edit().putFloat(key, value).apply();
     }
 
+    public static void clear(Context context) {
+        SharedPreferences sp = context.getSharedPreferences(SP_NAME,
+                Context.MODE_PRIVATE);
+        sp.edit().clear().apply();
+    }
+
     public static Locale getCurrentLocale(Context context) {
         int lan = SPManager.getInt(context, SPManager.KEY_LANGUAGE, SPManager.LANGUAGE_SIMPLIFIED_CHINESE);
         switch (lan) {

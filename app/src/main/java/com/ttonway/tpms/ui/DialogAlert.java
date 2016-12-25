@@ -13,9 +13,10 @@ import com.ttonway.tpms.R;
 public class DialogAlert extends BaseDialogFragment {
     private static final String KEY_MESSAGE = "DialogAlert:msg";
 
-    public static void showDialog(FragmentManager fm, CharSequence message) {
+    public static DialogAlert showDialog(FragmentManager fm, CharSequence message) {
         DialogAlert dialog = newInstance(message);
         dialog.show(fm, "alert");
+        return dialog;
     }
 
     public static DialogAlert newInstance(CharSequence message) {

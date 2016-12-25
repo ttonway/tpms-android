@@ -1,6 +1,7 @@
 package com.ttonway.tpms.ui;
 
 import android.graphics.drawable.Drawable;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -12,10 +13,12 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.TabHost;
 
+import com.google.common.eventbus.Subscribe;
 import com.ttonway.tpms.TpmsApp;
 import com.ttonway.tpms.R;
 import com.ttonway.tpms.SPManager;
 import com.ttonway.tpms.usb.BackgroundService;
+import com.ttonway.tpms.usb.SettingChangeEvent;
 import com.ttonway.tpms.usb.TpmsDevice;
 import com.ttonway.tpms.utils.Utils;
 import com.ttonway.tpms.widget.TabManager;
@@ -54,6 +57,36 @@ public class MainActivity extends AppCompatActivity {
 
     TpmsDevice device;
 
+    Handler mHandler = new Handler();
+    DialogAlert mErrorDialog;
+    final Runnable mAudoDismissRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if (mErrorDialog != null) {
+                mErrorDialog.dismissAllowingStateLoss();
+                mErrorDialog = null;
+            }
+        }
+    };
+
+    @Subscribe
+    public void onSettingChanged(final SettingChangeEvent e) {
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                if (e.command == TpmsDevice.CMD_QUERY_SETTING) {
+                    Log.d(TAG, "dismiss error dialog");
+                    if (mErrorDialog != null) {
+                        mErrorDialog.dismissAllowingStateLoss();
+                        mErrorDialog = null;
+                    }
+                    mHandler.removeCallbacks(mAudoDismissRunnable);
+                }
+            }
+        });
+    }
+
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,6 +110,7 @@ public class MainActivity extends AppCompatActivity {
 
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);// 保持常亮的屏幕的状态
         initTpmsDevice();
+        device.registerReceiver(this);
         BackgroundService.startService(this);
 
 //        new TTSUtils(this);
@@ -88,9 +122,15 @@ public class MainActivity extends AppCompatActivity {
             DialogAlert.showDialog(getSupportFragmentManager(), getString(R.string.alert_message_usb_host_unavailable));
         } else {
             if (device.openDevice()) {
-                //device.querySettings();
+//                device.querySettings();
             } else {
-                DialogAlert.showDialog(getSupportFragmentManager(), getString(R.string.alert_message_usb_io_error));
+                if (mErrorDialog != null) {
+                    mErrorDialog.dismissAllowingStateLoss();
+                    mErrorDialog = null;
+                }
+                mHandler.removeCallbacks(mAudoDismissRunnable);
+                mErrorDialog = DialogAlert.showDialog(getSupportFragmentManager(), getString(R.string.alert_message_usb_io_error));
+                mHandler.postDelayed(mAudoDismissRunnable, 3000);
             }
         }
     }
@@ -100,9 +140,12 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         Log.d(TAG, "onResume");
 
+        if (device.isOpen() && device.hasError()) {
+            device.closeDevice();
+        }
         if (!device.isOpen()) {
             if (device.openDevice()) {
-                //device.querySettings();
+//                device.querySettings();
             }
         }
 
@@ -116,12 +159,20 @@ public class MainActivity extends AppCompatActivity {
         Log.d(TAG, "onPause");
 
         device.unregisterReceiver(this);
+
+        if (mErrorDialog != null) {
+            mErrorDialog.dismissAllowingStateLoss();
+            mErrorDialog = null;
+        }
+        mHandler.removeCallbacks(mAudoDismissRunnable);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         Log.d(TAG, "onDestroy");
+
+        device.unregisterReceiver(this);
 
         BackgroundService.startService(this);
     }

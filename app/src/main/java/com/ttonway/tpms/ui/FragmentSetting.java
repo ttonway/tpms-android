@@ -22,6 +22,7 @@ import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import butterknife.Unbinder;
 import io.techery.progresshint.ProgressHintDelegate;
 import io.techery.progresshint.addition.widget.SeekBar;
@@ -62,9 +63,9 @@ public class FragmentSetting extends BaseFragment {
         float lowerLimit = device.mPressureLowLimit;
         int upperLimit2 = device.mTemperatureLimit;
 
-        mSeekBarUpperLimit.setProgress((int) ((upperLimit - SPManager.PRESSURE_UPPER_LIMIT_MIN) / SPManager.PRESSURE_UPPER_LIMIT_RANGE * 100));
-        mSeekBarLowerLimit.setProgress((int) ((lowerLimit - SPManager.PRESSURE_LOWER_LIMIT_MIN) / SPManager.PRESSURE_LOWER_LIMIT_RANGE * 100));
-        mSeekBarTempUpperLimit.setProgress((int) ((float) (upperLimit2 - SPManager.TEMP_UPPER_LIMIT_MIN) / SPManager.TEMP_UPPER_LIMIT_RANGE * 100 + .5f));
+        mSeekBarUpperLimit.setProgress((int) ((upperLimit - SPManager.PRESSURE_UPPER_LIMIT_MIN) / SPManager.PRESSURE_UPPER_LIMIT_RANGE * 100 + 0.5f));
+        mSeekBarLowerLimit.setProgress((int) ((lowerLimit - SPManager.PRESSURE_LOWER_LIMIT_MIN) / SPManager.PRESSURE_LOWER_LIMIT_RANGE * 100 + 0.5f));
+        mSeekBarTempUpperLimit.setProgress((int) ((float) (upperLimit2 - SPManager.TEMP_UPPER_LIMIT_MIN) / SPManager.TEMP_UPPER_LIMIT_RANGE * 100 + 0.5f));
     }
 
     @Nullable
@@ -230,9 +231,25 @@ public class FragmentSetting extends BaseFragment {
 
 
         TpmsDevice device = getTpmeDevice();
-        if (bar2 != device.mPressureLowLimit || bar1 != device.mPressureHighLimit || degree != device.mTemperatureLimit) {
+        if (device.isSettingsChanged(bar2, bar1, degree)) {
             device.saveSettings(bar2, bar1, degree);
         }
+    }
+
+    @OnClick(R.id.btn_reset)
+    void resetSetting() {
+        SPManager.clear(getActivity());
+        getTpmeDevice().clearData();
+
+        TpmsDevice device = getTpmeDevice();
+//        if (device.isOpen()) {
+//            device.saveSettings(SPManager.PRESSURE_LOWER_LIMIT_DEFAULT, SPManager.PRESSURE_UPPER_LIMIT_DEFAULT, SPManager.TEMP_UPPER_LIMIT_DEFAULT);
+//        }
+        device.closeDeviceSafely();
+
+        Intent intent = new Intent(getActivity(), MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        getActivity().startActivity(intent);
     }
 
     @Override

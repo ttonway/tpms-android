@@ -6,6 +6,7 @@
     <string name="tab_setting">Setting</string>
     <string name="btn_ok">OK</string>
     <string name="btn_cancel">Cancel</string>
+    <string name="btn_reset">Reset</string>
     <string name="btn_voice">Sound</string>
     <string name="btn_tire1">Left Front Wheel</string>
     <string name="btn_tire2">Left End Wheel</string>

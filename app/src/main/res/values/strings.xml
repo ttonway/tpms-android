@@ -16,6 +16,7 @@
     <string name="tab_setting">设置</string>
     <string name="btn_ok">确定</string>
     <string name="btn_cancel">取消</string>
+    <string name="btn_reset">恢复出厂设置</string>
     <string name="btn_voice">声音</string>
     <string name="btn_tire1">左前轮</string>
     <string name="btn_tire2">左后轮</string>

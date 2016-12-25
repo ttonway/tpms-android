@@ -46,6 +46,7 @@ public class TpmsDevice {
     Handler mHandler = new Handler();
     ReadThread mReadThread;
     boolean mOpen;
+    boolean mHasError = false;
 
     final List<WriteCommand> mCommands = new ArrayList<>();
 
@@ -72,6 +73,10 @@ public class TpmsDevice {
         this.mEventBus = new EventBus();
         this.mPreferences = context.getSharedPreferences("device", Context.MODE_PRIVATE);
 
+        initData();
+    }
+
+    void initData() {
         mPressureLowLimit = mPreferences.getFloat("pressure-low-limit", SPManager.PRESSURE_LOWER_LIMIT_DEFAULT);
         mPressureHighLimit = mPreferences.getFloat("pressure-high-limit", SPManager.PRESSURE_UPPER_LIMIT_DEFAULT);
         mTemperatureLimit = mPreferences.getInt("temperature-high-limit", SPManager.TEMP_UPPER_LIMIT_DEFAULT);
@@ -109,6 +114,12 @@ public class TpmsDevice {
                     .putInt(prefix + "-temperature", status.temperature)
                     .apply();
         }
+    }
+
+    public void clearData() {
+        mPreferences.edit().clear().apply();
+
+        initData();
     }
 
     public void registerReceiver(Object object) {
@@ -157,6 +168,7 @@ public class TpmsDevice {
         querySettings();
 
         mOpen = true;
+        mHasError = false;
         return true;
     }
 
@@ -166,13 +178,33 @@ public class TpmsDevice {
             mReadThread.stopRunning();
             mReadThread = null;
 
+            synchronized (mCommands) {
+                for (WriteCommand cmd : mCommands) {
+                    mHandler.removeCallbacks(cmd);
+                }
+                mCommands.clear();
+            }
+
             mDriver.CloseDevice();
             mOpen = false;
         }
     }
 
+    public void closeDeviceSafely() {
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                closeDevice();
+            }
+        });
+    }
+
     public boolean isOpen() {
         return mOpen;
+    }
+
+    public boolean hasError() {
+        return mHasError;
     }
 
     private byte makeParity(byte[] buf, int length) {
@@ -254,16 +286,30 @@ public class TpmsDevice {
         postCommand(new WriteCommand(CMD_EXCHANGE_TIRE, new byte[]{tire1, tire2}));
     }
 
+    public boolean isSettingsChanged(float lowLimit, float highLimit, int tempLimit) {
+        byte[] buf = new byte[3];
+        buf[0] = (byte) (lowLimit / 0.1f + 0.5f);
+        buf[1] = (byte) (highLimit / 0.1f + 0.5f);
+        buf[2] = (byte) tempLimit;
+
+        byte[] buf2 = new byte[3];
+        buf2[0] = (byte) (mPressureLowLimit / 0.1f + 0.5f);
+        buf2[1] = (byte) (mPressureHighLimit / 0.1f + 0.5f);
+        buf2[2] = (byte) mTemperatureLimit;
+
+        return !Arrays.equals(buf, buf2);
+    }
+
     public void saveSettings(float lowLimit, float highLimit, int tempLimit) {
         byte[] buf = new byte[3];
-        buf[0] = (byte) (lowLimit / 0.1f);
-        buf[1] = (byte) (highLimit / 0.1f);
+        buf[0] = (byte) (lowLimit / 0.1f + 0.5f);
+        buf[1] = (byte) (highLimit / 0.1f + 0.5f);
         buf[2] = (byte) tempLimit;
         postCommand(new WriteCommand(CMD_SAVE_SETTING, buf));
     }
 
     private void querySettings() {
-        postCommand(new WriteCommand(CMD_QUERY_SETTING, new byte[0], 6000));
+        postCommand(new WriteCommand(CMD_QUERY_SETTING, new byte[0], 16000));
     }
 
     private void onReadData(byte[] buf, int length) {
@@ -362,7 +408,7 @@ public class TpmsDevice {
                         .putInt("temperature-high-limit", mTemperatureLimit)
                         .apply();
 
-                mEventBus.post(new SettingChangeEvent());
+                mEventBus.post(new SettingChangeEvent(CMD_SAVE_SETTING));
                 break;
             }
             // 查询应答
@@ -384,7 +430,7 @@ public class TpmsDevice {
                         .putInt("temperature-high-limit", mTemperatureLimit)
                         .apply();
 
-                mEventBus.post(new SettingChangeEvent());
+                mEventBus.post(new SettingChangeEvent(CMD_QUERY_SETTING));
                 break;
             }
             default: {
@@ -515,10 +561,21 @@ public class TpmsDevice {
                 tryCount++;
                 mHandler.postDelayed(this, delay);
                 if (tryCount > 1) {
+                    mHasError = true;
                     mEventBus.post(new TimeoutEvent(this.command));
                 }
                 return;
             }
+
+//            if (this.command == CMD_QUERY_SETTING) {
+//                tryCount++;
+//                writeData(this.command, this.data);
+//                mHandler.postDelayed(this, delay);
+//                if (tryCount > 1) {
+//                    mEventBus.post(new TimeoutEvent(this.command));
+//                }
+//                return;
+//            }
 
             if (tryCount < 3) {
                 tryCount++;
@@ -532,6 +589,7 @@ public class TpmsDevice {
                 }
             } else {
                 removeCommand(this);
+                mHasError = true;
                 mEventBus.post(new TimeoutEvent(this.command));
             }
         }

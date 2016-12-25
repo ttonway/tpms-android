@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.hardware.usb.UsbManager;
 import android.util.Log;
 
 import com.iflytek.cloud.SpeechConstant;
@@ -34,10 +35,23 @@ public class TpmsApp extends Application {
         }
     };
 
+    BroadcastReceiver mUsbReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.d(TAG, "onReceive " + intent);
+
+            if (intent != null && UsbManager.ACTION_USB_DEVICE_ATTACHED.equals(intent.getAction())) {
+                TpmsDevice.getInstance(context).openDevice();
+            } else if (intent != null && UsbManager.ACTION_USB_DEVICE_DETACHED.equals(intent.getAction())) {
+                TpmsDevice.getInstance(context).closeDevice();
+            }
+        }
+    };
+
     @Override
     public void onCreate() {
         super.onCreate();
-        Log.i(TAG, "onCreate");
+        Log.i(TAG, "onCreate " + Utils.getAppVersion(this));
 
         saveLogcatToFile(this);
 
@@ -47,6 +61,11 @@ public class TpmsApp extends Application {
 
         IntentFilter filter = new IntentFilter(Intent.ACTION_TIME_TICK);
         registerReceiver(mReceiver, filter);
+
+        IntentFilter usbFilter = new IntentFilter();
+        usbFilter.addAction(UsbManager.ACTION_USB_DEVICE_ATTACHED);
+        usbFilter.addAction(UsbManager.ACTION_USB_DEVICE_DETACHED);
+        registerReceiver(mUsbReceiver, usbFilter);
     }
 
     @Override
@@ -56,6 +75,7 @@ public class TpmsApp extends Application {
         TpmsDevice.getInstance(this).closeDevice();
 
         unregisterReceiver(mReceiver);
+        unregisterReceiver(mUsbReceiver);
     }
 
     public static void saveLogcatToFile(Context context) {

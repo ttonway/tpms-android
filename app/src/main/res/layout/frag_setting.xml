@@ -187,5 +187,25 @@
                 app:popupLayout="@layout/popup_layout"
                 app:popupStyle="follow" />
         </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:paddingTop="16dp">
+
+            <Button
+                android:id="@+id/btn_reset"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/common_margin_half"
+                android:background="@drawable/btn_positive"
+                android:minHeight="@dimen/button_minheight"
+                android:minWidth="200dp"
+                android:text="@string/btn_reset"
+                android:textColor="@color/text_green"
+                android:textSize="@dimen/text_normal2" />
+        </LinearLayout>
     </LinearLayout>
 </ScrollView>
