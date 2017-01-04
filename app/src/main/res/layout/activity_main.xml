@@ -114,6 +114,32 @@
                 android:background="@drawable/tab_background_right">
 
                 <Button
+                    android:id="@+id/btn_bluetooth"
+                    style="@style/TabButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawableTop="@drawable/ic_bluetooth"
+                    android:text="@string/btn_bluetooth"
+                    android:textColor="@color/text_white" />
+
+                <ProgressBar
+                    android:id="@+id/progress_bluetooth"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center" />
+            </FrameLayout>
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+            <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/tab_background_right">
+
+                <Button
                     android:id="@+id/btn_voice"
                     style="@style/TabButton"
                     android:layout_width="wrap_content"

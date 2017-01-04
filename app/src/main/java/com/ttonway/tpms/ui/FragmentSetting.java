@@ -14,8 +14,8 @@ import android.widget.RadioGroup;
 import com.google.common.eventbus.Subscribe;
 import com.ttonway.tpms.R;
 import com.ttonway.tpms.SPManager;
-import com.ttonway.tpms.usb.SettingChangeEvent;
-import com.ttonway.tpms.usb.TpmsDevice;
+import com.ttonway.tpms.core.SettingChangeEvent;
+import com.ttonway.tpms.core.TpmsDevice;
 import com.ttonway.tpms.utils.Utils;
 
 import java.util.Locale;

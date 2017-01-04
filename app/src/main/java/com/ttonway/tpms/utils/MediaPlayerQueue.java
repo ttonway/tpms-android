@@ -73,8 +73,8 @@ public class MediaPlayerQueue {
             return;
         }
         Log.d(TAG, "addresource success");
-        mResources.add(resource);
-        readyPlayer();
+//        mResources.add(resource);
+//        readyPlayer();
     }
 
 

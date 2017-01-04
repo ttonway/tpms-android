@@ -14,7 +14,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.ttonway.tpms.R;
-import com.ttonway.tpms.usb.TpmsDevice;
+import com.ttonway.tpms.core.TpmsDevice;
 
 import java.util.List;
 

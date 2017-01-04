@@ -1,4 +1,4 @@
-package com.ttonway.tpms.usb;
+package com.ttonway.tpms.core;
 
 import android.app.ActivityManager;
 import android.app.Dialog;
@@ -61,7 +61,7 @@ public class BackgroundService extends Service {
 
 
     @Subscribe
-    public void onTimeout(final TimeoutEvent e) {
+    public void onTimeout(final ErrorEvent e) {
         mHandler.post(new Runnable() {
             @Override
             public void run() {

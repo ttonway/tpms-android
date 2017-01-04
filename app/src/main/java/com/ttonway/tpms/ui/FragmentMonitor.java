@@ -13,9 +13,9 @@ import android.widget.TextView;
 
 import com.google.common.eventbus.Subscribe;
 import com.ttonway.tpms.R;
-import com.ttonway.tpms.usb.TireStatus;
-import com.ttonway.tpms.usb.TireStatusUpdatedEvent;
-import com.ttonway.tpms.usb.TpmsDevice;
+import com.ttonway.tpms.core.TireStatus;
+import com.ttonway.tpms.core.TireStatusUpdatedEvent;
+import com.ttonway.tpms.core.TpmsDevice;
 import com.ttonway.tpms.utils.Utils;
 
 import java.util.List;

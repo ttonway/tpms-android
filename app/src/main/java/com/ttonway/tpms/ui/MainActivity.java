@@ -1,5 +1,6 @@
 package com.ttonway.tpms.ui;
 
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -11,15 +12,17 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ProgressBar;
 import android.widget.TabHost;
 
 import com.google.common.eventbus.Subscribe;
-import com.ttonway.tpms.TpmsApp;
 import com.ttonway.tpms.R;
 import com.ttonway.tpms.SPManager;
-import com.ttonway.tpms.usb.BackgroundService;
-import com.ttonway.tpms.usb.SettingChangeEvent;
-import com.ttonway.tpms.usb.TpmsDevice;
+import com.ttonway.tpms.core.BackgroundService;
+import com.ttonway.tpms.core.SettingChangeEvent;
+import com.ttonway.tpms.core.StateChangeEvent;
+import com.ttonway.tpms.core.TpmsDevice;
+import com.ttonway.tpms.core.TpmsDriver;
 import com.ttonway.tpms.utils.Utils;
 import com.ttonway.tpms.widget.TabManager;
 
@@ -51,6 +54,10 @@ public class MainActivity extends AppCompatActivity {
     Button mVoiceBtn;
     @BindView(R.id.btn_setting)
     Button mSettingBtn;
+    @BindView(R.id.btn_bluetooth)
+    Button mBluetoothBtn;
+    @BindView(R.id.progress_bluetooth)
+    ProgressBar mBluetoothProgressBar;
     @BindView(android.R.id.tabhost)
     TabHost mTabHost;
     TabManager mTabManager;
@@ -86,6 +93,16 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    @Subscribe
+    public void onDeviceStateChanged(final StateChangeEvent e) {
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                refreshBluetoothState();
+            }
+        });
+    }
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -99,7 +116,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
-        mVoiceBtn.setSelected(SPManager.getBoolean(this, SPManager.KEY_VOICE_OPEN, true));
         initTabHost();
 
         if (getIntent().getBooleanExtra("restart-setting", false)) {
@@ -113,13 +129,38 @@ public class MainActivity extends AppCompatActivity {
         device.registerReceiver(this);
         BackgroundService.startService(this);
 
+        mVoiceBtn.setSelected(SPManager.getBoolean(this, SPManager.KEY_VOICE_OPEN, true));
+        refreshBluetoothState();
+
+
 //        new TTSUtils(this);
+    }
+
+    void refreshBluetoothState() {
+        if (mBluetoothBtn == null || mBluetoothProgressBar == null) {
+            return;
+        }
+
+        int state = device.getState();
+        if (state == TpmsDriver.STATE_OPEN) {
+            mBluetoothBtn.setVisibility(View.VISIBLE);
+            mBluetoothProgressBar.setVisibility(View.GONE);
+            mBluetoothBtn.setCompoundDrawablesRelativeWithIntrinsicBounds(0, R.drawable.ic_bluetooth, 0, 0);
+        } else if (state == TpmsDriver.STATE_CLOSE) {
+            mBluetoothBtn.setVisibility(View.VISIBLE);
+            mBluetoothProgressBar.setVisibility(View.GONE);
+            mBluetoothBtn.setCompoundDrawablesRelativeWithIntrinsicBounds(0, R.drawable.ic_bluetooth_off, 0, 0);
+        } else {
+            mBluetoothBtn.setVisibility(View.INVISIBLE);
+            mBluetoothProgressBar.setVisibility(View.VISIBLE);
+        }
     }
 
     void initTpmsDevice() {
         device = TpmsDevice.getInstance(this);
-        if (!TpmsApp.driver.UsbFeatureSupported()) {// 判断系统是否支持USB HOST
-            DialogAlert.showDialog(getSupportFragmentManager(), getString(R.string.alert_message_usb_host_unavailable));
+        String error = device.getTpmsDriver().isDriverSupported();
+        if (error != null) {
+            DialogAlert.showDialog(getSupportFragmentManager(), error);
         } else {
             if (device.openDevice()) {
 //                device.querySettings();
@@ -229,5 +270,10 @@ public class MainActivity extends AppCompatActivity {
         boolean open = !mVoiceBtn.isSelected();
         mVoiceBtn.setSelected(open);
         SPManager.setBoolean(this, SPManager.KEY_VOICE_OPEN, open);
+    }
+
+    @OnClick(R.id.btn_bluetooth)
+    void gotoScanActivity() {
+        startActivity(new Intent(this, DeviceScanActivity.class));
     }
 }

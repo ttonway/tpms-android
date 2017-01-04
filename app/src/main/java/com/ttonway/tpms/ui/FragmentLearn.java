@@ -9,9 +9,9 @@ import android.widget.LinearLayout;
 
 import com.google.common.eventbus.Subscribe;
 import com.ttonway.tpms.R;
-import com.ttonway.tpms.usb.TimeoutEvent;
-import com.ttonway.tpms.usb.TireMatchedEvent;
-import com.ttonway.tpms.usb.TpmsDevice;
+import com.ttonway.tpms.core.ErrorEvent;
+import com.ttonway.tpms.core.TireMatchedEvent;
+import com.ttonway.tpms.core.TpmsDevice;
 import com.ttonway.tpms.utils.MediaPlayerQueue;
 
 import java.util.List;
@@ -34,7 +34,7 @@ public class FragmentLearn extends BaseFragment {
     DialogLearn mProgressDialog;
 
     @Subscribe
-    public void onTimeout(TimeoutEvent e) {
+    public void onTimeout(ErrorEvent e) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {

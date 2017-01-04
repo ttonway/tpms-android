@@ -3,11 +3,14 @@
     package="com.ttonway.tpms">
 
     <uses-feature android:name="android.hardware.usb.host" />
+    <uses-feature android:name="android.hardware.bluetooth_le" android:required="true"/>
 
     <uses-permission android:name="android.permission.READ_LOGS" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.BLUETOOTH"/>
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
 
     <!--连接网络权限，用于执行云端语音能力 -->
     <uses-permission android:name="android.permission.INTERNET" />
@@ -62,13 +65,18 @@
                 android:resource="@xml/device_filter" />
         </activity>
 
-        <service android:name=".usb.BackgroundService">
+        <activity
+            android:name=".ui.DeviceScanActivity"
+            android:label="@string/activity_scan"
+            android:screenOrientation="landscape"/>
+
+        <service android:name=".core.BackgroundService">
             <intent-filter>
                 <action android:name="com.ttonway.tpms.ACTION_START_TMPS" />
             </intent-filter>
         </service>
 
-        <receiver android:name=".usb.TpmsBootReceiver">
+        <receiver android:name=".core.TpmsBootReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <category android:name="android.intent.category.LAUNCHER" />

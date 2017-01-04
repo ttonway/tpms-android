@@ -1,5 +1,12 @@
 <resources>
 
+    <string name="unknown_device">Unknown device</string>
+    <string name="ble_not_supported">BLE is not supported</string>
+    <string name="error_bluetooth_not_supported">Bluetooth not supported.</string>
+
+    <string name="activity_scan">Scan device</string>
+    <string name="menu_scan">Scan</string>
+    <string name="menu_stop">Stop</string>
     <string name="tab_monitor">Monitor</string>
     <string name="tab_learn">Tire\nMatch</string>
     <string name="tab_exchange">Tire\nExchange</string>
@@ -8,6 +15,7 @@
     <string name="btn_cancel">Cancel</string>
     <string name="btn_reset">Reset</string>
     <string name="btn_voice">Sound</string>
+    <string name="btn_bluetooth">Bluetooth</string>
     <string name="btn_tire1">Left Front Wheel</string>
     <string name="btn_tire2">Left End Wheel</string>
     <string name="btn_tire3">Right Front Wheel</string>

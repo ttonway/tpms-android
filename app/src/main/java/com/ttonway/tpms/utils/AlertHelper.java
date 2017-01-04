@@ -2,8 +2,8 @@ package com.ttonway.tpms.utils;
 
 import android.content.Context;
 
-import com.ttonway.tpms.usb.TireStatus;
-import com.ttonway.tpms.usb.TpmsDevice;
+import com.ttonway.tpms.core.TireStatus;
+import com.ttonway.tpms.core.TpmsDevice;
 
 import java.util.ArrayList;
 import java.util.List;

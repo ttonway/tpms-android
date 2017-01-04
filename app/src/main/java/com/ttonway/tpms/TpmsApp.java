@@ -10,8 +10,8 @@ import android.util.Log;
 
 import com.iflytek.cloud.SpeechConstant;
 import com.iflytek.cloud.SpeechUtility;
-import com.ttonway.tpms.usb.BackgroundService;
-import com.ttonway.tpms.usb.TpmsDevice;
+import com.ttonway.tpms.core.BackgroundService;
+import com.ttonway.tpms.core.TpmsDevice;
 import com.ttonway.tpms.utils.Utils;
 
 import java.io.File;
@@ -62,10 +62,12 @@ public class TpmsApp extends Application {
         IntentFilter filter = new IntentFilter(Intent.ACTION_TIME_TICK);
         registerReceiver(mReceiver, filter);
 
-        IntentFilter usbFilter = new IntentFilter();
-        usbFilter.addAction(UsbManager.ACTION_USB_DEVICE_ATTACHED);
-        usbFilter.addAction(UsbManager.ACTION_USB_DEVICE_DETACHED);
-        registerReceiver(mUsbReceiver, usbFilter);
+        if (TpmsDevice.getInstance(this).isUSBEnabled()) {
+            IntentFilter usbFilter = new IntentFilter();
+            usbFilter.addAction(UsbManager.ACTION_USB_DEVICE_ATTACHED);
+            usbFilter.addAction(UsbManager.ACTION_USB_DEVICE_DETACHED);
+            registerReceiver(mUsbReceiver, usbFilter);
+        }
     }
 
     @Override
@@ -75,7 +77,9 @@ public class TpmsApp extends Application {
         TpmsDevice.getInstance(this).closeDevice();
 
         unregisterReceiver(mReceiver);
-        unregisterReceiver(mUsbReceiver);
+        if (TpmsDevice.getInstance(this).isUSBEnabled()) {
+            unregisterReceiver(mUsbReceiver);
+        }
     }
 
     public static void saveLogcatToFile(Context context) {

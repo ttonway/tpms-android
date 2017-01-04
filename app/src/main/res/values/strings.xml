@@ -10,6 +10,13 @@
     <string name="degree_celsius" translatable="false">℃</string>
     <string name="degree_fahrenheit" translatable="false">℉</string>
 
+    <string name="unknown_device">未知设备</string>
+    <string name="ble_not_supported">该设备不支持BLE</string>
+    <string name="error_bluetooth_not_supported">蓝牙不可用</string>
+
+    <string name="activity_scan">设备搜索</string>
+    <string name="menu_scan">搜索</string>
+    <string name="menu_stop">停止</string>
     <string name="tab_monitor">监控</string>
     <string name="tab_learn">学习</string>
     <string name="tab_exchange">交换</string>
@@ -18,6 +25,7 @@
     <string name="btn_cancel">取消</string>
     <string name="btn_reset">恢复出厂设置</string>
     <string name="btn_voice">声音</string>
+    <string name="btn_bluetooth">蓝牙</string>
     <string name="btn_tire1">左前轮</string>
     <string name="btn_tire2">左后轮</string>
     <string name="btn_tire3">右前轮</string>

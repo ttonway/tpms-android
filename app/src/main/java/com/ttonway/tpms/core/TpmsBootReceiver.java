@@ -1,10 +1,9 @@
-package com.ttonway.tpms.usb;
+package com.ttonway.tpms.core;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
-import android.widget.Toast;
 
 /**
  * Created by ttonway on 2016/11/21.

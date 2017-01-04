@@ -1,5 +1,12 @@
 <resources>
 
+    <string name="unknown_device">未知設備</string>
+    <string name="ble_not_supported">該設備不支持BLE</string>
+    <string name="error_bluetooth_not_supported">藍牙不可用</string>
+
+    <string name="activity_scan">設備搜索</string>
+    <string name="menu_scan">搜索</string>
+    <string name="menu_stop">停止</string>
     <string name="tab_monitor">監控</string>
     <string name="tab_learn">學習</string>
     <string name="tab_exchange">交換</string>
@@ -8,6 +15,7 @@
     <string name="btn_cancel">取消</string>
     <string name="btn_reset">恢復出廠設置</string>
     <string name="btn_voice">聲音</string>
+    <string name="btn_bluetooth">藍牙</string>
     <string name="btn_tire1">左前輪</string>
     <string name="btn_tire2">左後輪</string>
     <string name="btn_tire3">右前輪</string>

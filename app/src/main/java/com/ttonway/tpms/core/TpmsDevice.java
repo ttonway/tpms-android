@@ -1,29 +1,27 @@
-package com.ttonway.tpms.usb;
+package com.ttonway.tpms.core;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.hardware.usb.UsbManager;
 import android.os.Handler;
 import android.util.Log;
 
 import com.google.common.eventbus.EventBus;
-import com.ttonway.tpms.TpmsApp;
 import com.ttonway.tpms.SPManager;
+import com.ttonway.tpms.bluetooth.BluetoothLeDriver;
+import com.ttonway.tpms.usb.UsbDriver;
+import com.ttonway.tpms.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
-import cn.wch.ch34xuartdriver.CH34xUARTDriver;
 
 /**
  * Created by ttonway on 2016/11/7.
  */
-public class TpmsDevice {
+public class TpmsDevice implements DriverCallback {
     private static final String TAG = TpmsDevice.class.getSimpleName();
-
-    private static final String ACTION_USB_PERMISSION = "cn.wch.wchusbdriver.USB_PERMISSION";
 
     public static final byte TIRE_NONE = Byte.MIN_VALUE;
     public static final byte TIRE_LEFT_FRONT = 0;
@@ -39,13 +37,11 @@ public class TpmsDevice {
 
     private static TpmsDevice instance = null;
 
-    CH34xUARTDriver mDriver;
+    TpmsDriver mDriver;
     EventBus mEventBus;
     SharedPreferences mPreferences;
 
     Handler mHandler = new Handler();
-    ReadThread mReadThread;
-    boolean mOpen;
     boolean mHasError = false;
 
     final List<WriteCommand> mCommands = new ArrayList<>();
@@ -66,14 +62,27 @@ public class TpmsDevice {
     }
 
     private TpmsDevice(Context context) {
-        TpmsApp.driver = new CH34xUARTDriver(
-                (UsbManager) context.getSystemService(Context.USB_SERVICE), context.getApplicationContext(),
-                ACTION_USB_PERMISSION);
-        this.mDriver = TpmsApp.driver;
+        this.mDriver = new BluetoothLeDriver(context, this);
         this.mEventBus = new EventBus();
         this.mPreferences = context.getSharedPreferences("device", Context.MODE_PRIVATE);
 
         initData();
+    }
+
+    public TpmsDriver getTpmsDriver() {
+        return mDriver;
+    }
+
+    public boolean isBluetoothEnabled() {
+        return mDriver instanceof BluetoothLeDriver;
+    }
+
+    public boolean isUSBEnabled() {
+        return mDriver instanceof UsbDriver;
+    }
+
+    public int getState() {
+        return mDriver.getState();
     }
 
     void initData() {
@@ -132,62 +141,28 @@ public class TpmsDevice {
 
     public boolean openDevice() {
         Log.d(TAG, "openDevice");
-        if (mOpen) {
-            Log.e(TAG, "Already opened.");
+        if (mDriver.openDevice()) {
+            querySettings();
+
+            mHasError = false;
+
             return true;
         }
 
-        // ResumeUsbList方法用于枚举CH34X设备以及打开相关设备
-        if (!mDriver.ResumeUsbList()) {
-            Log.e(TAG, "ResumeUsbList fail.");
-            mDriver.CloseDevice();
-            return false;
-        }
-
-        //对串口设备进行初始化操作
-        if (!mDriver.UartInit()) {
-            Log.e(TAG, "UartInit fail.");
-            return false;
-        }
-
-        //配置串口波特率，函数说明可参照编程手册
-        int baudRate = 9600;
-        byte dataBit = 8;
-        byte stopBit = 1;
-        byte parity = 0;
-        byte flowControl = 0;
-
-        if (!mDriver.SetConfig(baudRate, dataBit, stopBit, parity, flowControl)) {
-            Log.e(TAG, "SetConfig fail.");
-            return false;
-        }
-
-        this.mReadThread = new ReadThread();
-        this.mReadThread.start();
-
-        querySettings();
-
-        mOpen = true;
-        mHasError = false;
-        return true;
+        return false;
     }
 
     public void closeDevice() {
         Log.d(TAG, "closeDevice");
-        if (mOpen) {
-            mReadThread.stopRunning();
-            mReadThread = null;
+        mDriver.closeDevice();
 
-            synchronized (mCommands) {
-                for (WriteCommand cmd : mCommands) {
-                    mHandler.removeCallbacks(cmd);
-                }
-                mCommands.clear();
+        synchronized (mCommands) {
+            for (WriteCommand cmd : mCommands) {
+                mHandler.removeCallbacks(cmd);
             }
-
-            mDriver.CloseDevice();
-            mOpen = false;
+            mCommands.clear();
         }
+
     }
 
     public void closeDeviceSafely() {
@@ -200,7 +175,7 @@ public class TpmsDevice {
     }
 
     public boolean isOpen() {
-        return mOpen;
+        return mDriver.getState() == TpmsDriver.STATE_OPEN;
     }
 
     public boolean hasError() {
@@ -227,7 +202,7 @@ public class TpmsDevice {
         buf[index++] = makeParity(buf, index);
         buf[index++] = (byte) 0xAA;
 
-        Log.d(TAG, "[WriteData] " + toHexString(buf, index));
+        Log.d(TAG, "[WriteData] " + Utils.toHexString(buf, index));
         int retval = mDriver.WriteData(buf, index);
         return retval >= 0;
     }
@@ -312,7 +287,47 @@ public class TpmsDevice {
         postCommand(new WriteCommand(CMD_QUERY_SETTING, new byte[0], 16000));
     }
 
-    private void onReadData(byte[] buf, int length) {
+    @Override
+    public void onStateChanged(int state) {
+        String s = null;
+        switch (state) {
+            case TpmsDriver.STATE_OPEN:
+                s = "OPEN";
+                break;
+            case TpmsDriver.STATE_OPENING:
+                s = "OPENING";
+                break;
+            case TpmsDriver.STATE_CLOSE:
+                s = "CLOSE";
+                break;
+            case TpmsDriver.STATE_CLOSING:
+                s = "CLOSING";
+                break;
+        }
+        Log.d(TAG, "onStateChanged " + s);
+        mEventBus.post(new StateChangeEvent());
+    }
+
+    @Override
+    public void onError(int error) {
+        Log.d(TAG, "onError " + error);
+        mEventBus.post(new ErrorEvent(error));
+
+        closeDevice();
+    }
+
+    @Override
+    public void onReadData(byte[] buf, int length) {
+        String recv = Utils.toHexString(buf, length);
+        Log.d(TAG, "[ReadData] " + recv);
+        try {
+            onReadCommand(buf, length);
+        } catch (Exception e) {
+            Log.e(TAG, "onReadCommand fail.", e);
+        }
+    }
+
+    public void onReadCommand(byte[] buf, int length) {
         if (length < 5) {
             Log.e(TAG, "[onReadData] length too short.");
             return;
@@ -372,7 +387,7 @@ public class TpmsDevice {
             case 0x04: {
                 byte tire = data[0];
                 byte[] array = Arrays.copyOfRange(data, 1, 5);
-                String str = toHexString(array, 4);
+                String str = Utils.toHexString(array, 4);
 
                 mEventBus.post(new TireMatchedEvent(tire, str));
                 break;
@@ -441,103 +456,6 @@ public class TpmsDevice {
     }
 
 
-    private class ReadThread extends Thread {
-
-        private boolean mRunning = true;
-
-        public void run() {
-            byte[] buffer = new byte[64];
-
-            while (true) {
-                if (!mRunning) {
-                    break;
-                }
-
-                int length = mDriver.ReadData(buffer, 64);
-                if (length > 0) {
-                    String recv = toHexString(buffer, length);
-                    Log.d(TAG, "[ReadData] " + recv);
-                    try {
-                        onReadData(buffer, length);
-                    } catch (Exception e) {
-                        Log.e(TAG, "onReadData fail.", e);
-                    }
-                }
-            }
-        }
-
-        public void stopRunning() {
-            mRunning = false;
-        }
-    }
-
-    /**
-     * 将byte[]数组转化为String类型
-     *
-     * @param arg    需要转换的byte[]数组
-     * @param length 需要转换的数组长度
-     * @return 转换后的String队形
-     */
-    private String toHexString(byte[] arg, int length) {
-        String result = new String();
-        if (arg != null) {
-            for (int i = 0; i < length; i++) {
-                result = result
-                        + (Integer.toHexString(
-                        arg[i] < 0 ? arg[i] + 256 : arg[i]).length() == 1 ? "0"
-                        + Integer.toHexString(arg[i] < 0 ? arg[i] + 256
-                        : arg[i])
-                        : Integer.toHexString(arg[i] < 0 ? arg[i] + 256
-                        : arg[i])) + " ";
-            }
-            return result;
-        }
-        return "";
-    }
-
-    /**
-     * 将String转化为byte[]数组
-     *
-     * @param arg 需要转换的String对象
-     * @return 转换后的byte[]数组
-     */
-    private byte[] toByteArray(String arg) {
-        if (arg != null) {
-            /* 1.先去除String中的' '，然后将String转换为char数组 */
-            char[] NewArray = new char[1000];
-            char[] array = arg.toCharArray();
-            int length = 0;
-            for (int i = 0; i < array.length; i++) {
-                if (array[i] != ' ') {
-                    NewArray[length] = array[i];
-                    length++;
-                }
-            }
-            /* 将char数组中的值转成一个实际的十进制数组 */
-            int EvenLength = (length % 2 == 0) ? length : length + 1;
-            if (EvenLength != 0) {
-                int[] data = new int[EvenLength];
-                data[EvenLength - 1] = 0;
-                for (int i = 0; i < length; i++) {
-                    if (NewArray[i] >= '0' && NewArray[i] <= '9') {
-                        data[i] = NewArray[i] - '0';
-                    } else if (NewArray[i] >= 'a' && NewArray[i] <= 'f') {
-                        data[i] = NewArray[i] - 'a' + 10;
-                    } else if (NewArray[i] >= 'A' && NewArray[i] <= 'F') {
-                        data[i] = NewArray[i] - 'A' + 10;
-                    }
-                }
-                /* 将 每个char的值每两个组成一个16进制数据 */
-                byte[] byteArray = new byte[EvenLength / 2];
-                for (int i = 0; i < EvenLength / 2; i++) {
-                    byteArray[i] = (byte) (data[i * 2] * 16 + data[i * 2 + 1]);
-                }
-                return byteArray;
-            }
-        }
-        return new byte[]{};
-    }
-
     private class WriteCommand implements Runnable {
         byte command;
         byte[] data;
@@ -562,7 +480,8 @@ public class TpmsDevice {
                 mHandler.postDelayed(this, delay);
                 if (tryCount > 1) {
                     mHasError = true;
-                    mEventBus.post(new TimeoutEvent(this.command));
+                    Log.e(TAG, "command " + this.command + " timeout");
+                    mEventBus.post(new ErrorEvent(this.command));
                 }
                 return;
             }
@@ -572,7 +491,7 @@ public class TpmsDevice {
 //                writeData(this.command, this.data);
 //                mHandler.postDelayed(this, delay);
 //                if (tryCount > 1) {
-//                    mEventBus.post(new TimeoutEvent(this.command));
+//                    mEventBus.post(new ErrorEvent(this.command));
 //                }
 //                return;
 //            }
@@ -584,13 +503,14 @@ public class TpmsDevice {
                 } else {
                     Log.e(TAG, "writeData fail.");
 //                    removeCommand(this);
-//                    mEventBus.post(new TimeoutEvent());
+//                    mEventBus.post(new ErrorEvent());
                     mHandler.postDelayed(this, delay);
                 }
             } else {
                 removeCommand(this);
                 mHasError = true;
-                mEventBus.post(new TimeoutEvent(this.command));
+                Log.e(TAG, "command " + this.command + " timeout");
+                mEventBus.post(new ErrorEvent(this.command));
             }
         }
     }
