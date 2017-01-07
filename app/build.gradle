@@ -15,7 +15,7 @@ android {
     buildToolsVersion "23.0.2"
 
     defaultConfig {
-        applicationId "com.ttonway.tpms"
+        applicationId "com.ttonway.tpms.bluetooth"
         minSdkVersion 18
         targetSdkVersion 23
         versionCode 21
