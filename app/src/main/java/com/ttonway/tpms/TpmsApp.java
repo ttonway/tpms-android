@@ -8,8 +8,6 @@ import android.content.IntentFilter;
 import android.hardware.usb.UsbManager;
 import android.util.Log;
 
-import com.iflytek.cloud.SpeechConstant;
-import com.iflytek.cloud.SpeechUtility;
 import com.ttonway.tpms.core.BackgroundService;
 import com.ttonway.tpms.core.TpmsDevice;
 import com.ttonway.tpms.utils.Utils;
@@ -56,8 +54,6 @@ public class TpmsApp extends Application {
         saveLogcatToFile(this);
 
         Utils.setupLocale(this);
-
-        SpeechUtility.createUtility(this, SpeechConstant.APPID + "=58228f78");
 
         IntentFilter filter = new IntentFilter(Intent.ACTION_TIME_TICK);
         registerReceiver(mReceiver, filter);

@@ -14,6 +14,7 @@ public abstract class TpmsDriver {
 
     public static final int ERROR_WRONG_DEVICE = 1;
     public static final int ERROR_TIMEOUT = 2;
+    public static final int ERROR_CONNECTION_FAIL = 3;
 
     protected Context mContext;
     protected int mState;

@@ -10,8 +10,10 @@ import android.widget.LinearLayout;
 import com.google.common.eventbus.Subscribe;
 import com.ttonway.tpms.R;
 import com.ttonway.tpms.core.ErrorEvent;
+import com.ttonway.tpms.core.StateChangeEvent;
 import com.ttonway.tpms.core.TireMatchedEvent;
 import com.ttonway.tpms.core.TpmsDevice;
+import com.ttonway.tpms.core.TpmsDriver;
 import com.ttonway.tpms.utils.MediaPlayerQueue;
 
 import java.util.List;
@@ -35,6 +37,17 @@ public class FragmentLearn extends BaseFragment {
 
     @Subscribe
     public void onTimeout(ErrorEvent e) {
+        resetMatching();
+    }
+
+    @Subscribe
+    public void onDeviceStateChanged(final StateChangeEvent e) {
+        if (TpmsDevice.getInstance(getActivity()).getState() != TpmsDriver.STATE_OPEN) {
+            resetMatching();
+        }
+    }
+
+    void resetMatching() {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {

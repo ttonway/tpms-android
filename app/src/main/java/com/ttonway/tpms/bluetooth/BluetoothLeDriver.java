@@ -27,6 +27,7 @@ import android.bluetooth.BluetoothProfile;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.os.Handler;
 import android.util.Log;
 
 import com.ttonway.tpms.R;
@@ -53,6 +54,14 @@ public class BluetoothLeDriver extends TpmsDriver {
     private BluetoothGattCharacteristic mNotifyCharac;
     private boolean mNotifyEnabled;
 
+    private Handler mHandler;
+    private final Runnable mConnTimeoutCheckTask = new Runnable() {
+        @Override
+        public void run() {
+            mCallback.onError(TpmsDriver.ERROR_CONNECTION_FAIL);
+        }
+    };
+
     // Implements callback methods for GATT events that the app cares about.  For example,
     // connection change and services discovered.
     private final BluetoothGattCallback mGattCallback = new BluetoothGattCallback() {
@@ -64,16 +73,17 @@ public class BluetoothLeDriver extends TpmsDriver {
                 Log.i(TAG, "Attempting to start service discovery:" +
                         mBluetoothGatt.discoverServices());
 
-                setState(STATE_OPEN);
+                mHandler.removeCallbacks(mConnTimeoutCheckTask);
+
             } else if (newState == BluetoothProfile.STATE_DISCONNECTED) {
                 Log.i(TAG, "Disconnected from GATT server.");
                 setState(STATE_CLOSE);
             } else if (newState == BluetoothProfile.STATE_CONNECTING) {
                 Log.i(TAG, "Connecting to GATT server.");
-                setState(STATE_OPENING);
+//                setState(STATE_OPENING);
             } else if (newState == BluetoothProfile.STATE_DISCONNECTING) {
                 Log.i(TAG, "Disconnecting from GATT server.");
-                setState(STATE_CLOSING);
+//                setState(STATE_CLOSING);
             }
         }
 
@@ -103,6 +113,7 @@ public class BluetoothLeDriver extends TpmsDriver {
                 } else {
                     setCharacteristicNotification(mNotifyCharac, true);
                     mNotifyEnabled = true;
+                    setState(STATE_OPEN);
                 }
             } else {
                 Log.w(TAG, "onServicesDiscovered received: " + status);
@@ -132,6 +143,8 @@ public class BluetoothLeDriver extends TpmsDriver {
 
     public BluetoothLeDriver(Context context, DriverCallback callback) {
         super(context, callback);
+
+        mHandler = new Handler();
 
         mSharedPreferences = context.getSharedPreferences("bluetooth", Context.MODE_PRIVATE);
         mBluetoothDeviceAddress = mSharedPreferences.getString("address", null);
@@ -203,8 +216,13 @@ public class BluetoothLeDriver extends TpmsDriver {
             Log.d(TAG, "Trying to use an existing mBluetoothGatt for connection.");
             if (mBluetoothGatt.connect()) {
                 setState(STATE_OPENING);
+
+                mHandler.removeCallbacks(mConnTimeoutCheckTask);
+                mHandler.postDelayed(mConnTimeoutCheckTask, 10000);
                 return true;
             } else {
+                Log.e(TAG, "connect fail, close GATT.");
+                closeDevice();
                 return false;
             }
         }
@@ -216,9 +234,12 @@ public class BluetoothLeDriver extends TpmsDriver {
         }
         // We want to directly connect to the device, so we are setting the autoConnect
         // parameter to false.
-        mBluetoothGatt = device.connectGatt(mContext, true, mGattCallback);
-        Log.d(TAG, "Trying to create a new connection.");
+        mBluetoothGatt = device.connectGatt(mContext, false, mGattCallback);
+        Log.d(TAG, "Trying to create a new connection. " + mBluetoothGatt);
         setState(STATE_OPENING);
+
+        mHandler.removeCallbacks(mConnTimeoutCheckTask);
+        mHandler.postDelayed(mConnTimeoutCheckTask, 10000);
         return true;
     }
 

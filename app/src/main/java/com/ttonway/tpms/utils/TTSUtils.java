@@ -7,6 +7,7 @@ import android.util.Log;
 import com.iflytek.cloud.SpeechConstant;
 import com.iflytek.cloud.SpeechError;
 import com.iflytek.cloud.SpeechSynthesizer;
+import com.iflytek.cloud.SpeechUtility;
 import com.iflytek.cloud.SynthesizerListener;
 
 /**
@@ -93,6 +94,7 @@ public class TTSUtils {
     public TTSUtils(Context context) {
         this.mContext = context;
 
+        SpeechUtility.createUtility(context, SpeechConstant.APPID + "=58228f78");
         generateWav();
     }
 

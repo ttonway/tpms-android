@@ -109,6 +109,7 @@
                 android:layout_weight="1" />
 
             <FrameLayout
+                android:id="@+id/box_bluetooth"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/tab_background_right">
@@ -118,6 +119,7 @@
                     style="@style/TabButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:clickable="false"
                     android:drawableTop="@drawable/ic_bluetooth"
                     android:text="@string/btn_bluetooth"
                     android:textColor="@color/text_white" />

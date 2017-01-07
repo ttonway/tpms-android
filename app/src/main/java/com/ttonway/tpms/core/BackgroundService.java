@@ -129,6 +129,10 @@ public class BackgroundService extends Service {
         });
     }
 
+    @Subscribe
+    public void onDeviceStateChanged(final StateChangeEvent e) {
+    }
+
     @Override
     public void onCreate() {
         super.onCreate();

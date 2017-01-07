@@ -43,6 +43,7 @@ public class TpmsDevice implements DriverCallback {
 
     Handler mHandler = new Handler();
     boolean mHasError = false;
+    boolean mNeedSettings = false;
 
     final List<WriteCommand> mCommands = new ArrayList<>();
 
@@ -62,7 +63,7 @@ public class TpmsDevice implements DriverCallback {
     }
 
     private TpmsDevice(Context context) {
-        this.mDriver = new BluetoothLeDriver(context, this);
+        this.mDriver = DriverFactory.newDriver(context, this);
         this.mEventBus = new EventBus();
         this.mPreferences = context.getSharedPreferences("device", Context.MODE_PRIVATE);
 
@@ -142,7 +143,8 @@ public class TpmsDevice implements DriverCallback {
     public boolean openDevice() {
         Log.d(TAG, "openDevice");
         if (mDriver.openDevice()) {
-            querySettings();
+//            querySettings();
+            mNeedSettings = true;
 
             mHasError = false;
 
@@ -284,7 +286,8 @@ public class TpmsDevice implements DriverCallback {
     }
 
     private void querySettings() {
-        postCommand(new WriteCommand(CMD_QUERY_SETTING, new byte[0], 16000));
+//        postCommand(new WriteCommand(CMD_QUERY_SETTING, new byte[0], 16000));
+        postCommand(new WriteCommand(CMD_QUERY_SETTING, new byte[0]));
     }
 
     @Override
@@ -293,6 +296,11 @@ public class TpmsDevice implements DriverCallback {
         switch (state) {
             case TpmsDriver.STATE_OPEN:
                 s = "OPEN";
+
+                if (mNeedSettings) {
+                    querySettings();
+                    mNeedSettings = false;
+                }
                 break;
             case TpmsDriver.STATE_OPENING:
                 s = "OPENING";
@@ -475,16 +483,16 @@ public class TpmsDevice implements DriverCallback {
 
         @Override
         public void run() {
-            if (this.command == CMD_QUERY_SETTING) {
-                tryCount++;
-                mHandler.postDelayed(this, delay);
-                if (tryCount > 1) {
-                    mHasError = true;
-                    Log.e(TAG, "command " + this.command + " timeout");
-                    mEventBus.post(new ErrorEvent(this.command));
-                }
-                return;
-            }
+//            if (this.command == CMD_QUERY_SETTING) {
+//                tryCount++;
+//                mHandler.postDelayed(this, delay);
+//                if (tryCount > 1) {
+//                    mHasError = true;
+//                    Log.e(TAG, "command " + this.command + " timeout");
+//                    mEventBus.post(new ErrorEvent(this.command));
+//                }
+//                return;
+//            }
 
 //            if (this.command == CMD_QUERY_SETTING) {
 //                tryCount++;

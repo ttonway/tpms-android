@@ -213,7 +213,11 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
         Log.d(TAG, "onDestroy");
 
-        device.unregisterReceiver(this);
+        try {
+            device.unregisterReceiver(this);
+        } catch (Exception e) {
+            Log.e(TAG, "unregister MainActivity fail.", e);
+        }
 
         BackgroundService.startService(this);
     }
@@ -272,7 +276,7 @@ public class MainActivity extends AppCompatActivity {
         SPManager.setBoolean(this, SPManager.KEY_VOICE_OPEN, open);
     }
 
-    @OnClick(R.id.btn_bluetooth)
+    @OnClick(R.id.box_bluetooth)
     void gotoScanActivity() {
         startActivity(new Intent(this, DeviceScanActivity.class));
     }
