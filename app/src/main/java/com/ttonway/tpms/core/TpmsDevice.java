@@ -483,16 +483,18 @@ public class TpmsDevice implements DriverCallback {
 
         @Override
         public void run() {
-//            if (this.command == CMD_QUERY_SETTING) {
-//                tryCount++;
-//                mHandler.postDelayed(this, delay);
-//                if (tryCount > 1) {
-//                    mHasError = true;
-//                    Log.e(TAG, "command " + this.command + " timeout");
-//                    mEventBus.post(new ErrorEvent(this.command));
-//                }
-//                return;
-//            }
+            if (isUSBEnabled()) {
+                if (this.command == CMD_QUERY_SETTING) {
+                    tryCount++;
+                    mHandler.postDelayed(this, delay);
+                    if (tryCount > 1) {
+                        mHasError = true;
+                        Log.e(TAG, "command " + this.command + " timeout");
+                        mEventBus.post(new ErrorEvent(this.command));
+                    }
+                    return;
+                }
+            }
 
 //            if (this.command == CMD_QUERY_SETTING) {
 //                tryCount++;

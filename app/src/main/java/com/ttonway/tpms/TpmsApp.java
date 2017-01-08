@@ -16,11 +16,14 @@ import java.io.File;
 import java.io.IOException;
 
 import cn.wch.ch34xuartdriver.CH34xUARTDriver;
+import cn.wch.ch9326driver.CH9326UARTDriver;
 
 public class TpmsApp extends Application {
     private static final String TAG = TpmsApp.class.getSimpleName();
 
-    public static CH34xUARTDriver driver;// 需要将CH34x的驱动类写在APP类下面，使得帮助类的生命周期与整个应用程序的生命周期是相同的
+    // 需要将CH34x的驱动类写在APP类下面，使得帮助类的生命周期与整个应用程序的生命周期是相同的
+    public static CH34xUARTDriver driver1;
+    public static CH9326UARTDriver driver2;
 
     BroadcastReceiver mReceiver = new BroadcastReceiver() {
         @Override
