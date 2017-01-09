@@ -16,6 +16,7 @@ import android.widget.ProgressBar;
 import android.widget.TabHost;
 
 import com.google.common.eventbus.Subscribe;
+import com.ttonway.tpms.BuildConfig;
 import com.ttonway.tpms.R;
 import com.ttonway.tpms.SPManager;
 import com.ttonway.tpms.core.BackgroundService;
@@ -58,6 +59,12 @@ public class MainActivity extends AppCompatActivity {
     Button mBluetoothBtn;
     @BindView(R.id.progress_bluetooth)
     ProgressBar mBluetoothProgressBar;
+
+    @BindView(R.id.divider_bluetooth)
+    View mBluetoothDivider;
+    @BindView(R.id.box_bluetooth)
+    FrameLayout mBluetoothBox;
+
     @BindView(android.R.id.tabhost)
     TabHost mTabHost;
     TabManager mTabManager;
@@ -116,6 +123,10 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
+        if (!BuildConfig.FLAVOR.equals("bluetooth")) {
+            mBluetoothDivider.setVisibility(View.GONE);
+            mBluetoothBox.setVisibility(View.GONE);
+        }
         initTabHost();
 
         if (getIntent().getBooleanExtra("restart-setting", false)) {
@@ -125,6 +136,9 @@ public class MainActivity extends AppCompatActivity {
         }
 
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);// 保持常亮的屏幕的状态
+//        WindowManager.LayoutParams lp = getWindow().getAttributes();
+//        lp.screenBrightness = 0;
+//        getWindow().setAttributes(lp);
         initTpmsDevice();
         device.registerReceiver(this);
         BackgroundService.startService(this);

@@ -45,7 +45,7 @@ android {
         usb {
             applicationId "com.ttonway.tpms"
             minSdkVersion 17
-            versionCode 21
+            versionCode 22
             versionName "1.5.1"
         }
     }

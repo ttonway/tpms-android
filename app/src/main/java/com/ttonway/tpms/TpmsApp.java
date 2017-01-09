@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.hardware.usb.UsbManager;
+import android.util.DisplayMetrics;
 import android.util.Log;
 
 import com.ttonway.tpms.core.BackgroundService;
@@ -52,9 +53,15 @@ public class TpmsApp extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        Log.i(TAG, "onCreate " + Utils.getAppVersion(this));
+        Log.i(TAG, "onCreate");
 
         saveLogcatToFile(this);
+
+        Log.i(TAG, "App Version: " + Utils.getAppVersion(this) + "(" + Utils.getAppVersionCode(this) + ")");
+        Log.i(TAG, "BuildConfig: {applicationId=" + BuildConfig.APPLICATION_ID + ", buildType=" + BuildConfig.BUILD_TYPE + ", flavor=" + BuildConfig.FLAVOR
+                + ", debug=" + BuildConfig.DEBUG + ", versionName=" + BuildConfig.VERSION_NAME + ", versionCode=" + BuildConfig.VERSION_CODE + "}");
+        DisplayMetrics metrics = getResources().getDisplayMetrics();
+        Log.i(TAG, "DisplayMetrics: " + metrics);
 
         Utils.setupLocale(this);
 

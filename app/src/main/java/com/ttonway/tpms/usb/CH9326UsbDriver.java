@@ -10,24 +10,25 @@ import com.ttonway.tpms.core.DriverCallback;
 import com.ttonway.tpms.core.TpmsDriver;
 
 import cn.wch.ch34xuartdriver.CH34xUARTDriver;
+import cn.wch.ch9326driver.CH9326UARTDriver;
 
 /**
  * Created by ttonway on 2017/1/2.
  */
-public class UsbDriver extends TpmsDriver {
-    private static final String TAG = UsbDriver.class.getSimpleName();
+public class CH9326UsbDriver extends TpmsDriver {
+    private static final String TAG = CH9326UsbDriver.class.getSimpleName();
 
-    private static final String ACTION_USB_PERMISSION = "cn.wch.wchusbdriver.USB_PERMISSION";
+    private static final String ACTION_USB_PERMISSION = "cn.wch.CH9326UARTDemoDriver.USB_PERMISSION";
 
-    CH34xUARTDriver mDriver;
+    CH9326UARTDriver mDriver;
     ReadThread mReadThread;
 
-    public UsbDriver(Context context, DriverCallback callback) {
+    public CH9326UsbDriver(Context context, DriverCallback callback) {
         super(context, callback);
-        TpmsApp.driver = new CH34xUARTDriver(
+        TpmsApp.driver2 = new CH9326UARTDriver(
                 (UsbManager) context.getSystemService(Context.USB_SERVICE), context.getApplicationContext(),
                 ACTION_USB_PERMISSION);
-        this.mDriver = TpmsApp.driver;
+        this.mDriver = TpmsApp.driver2;
     }
 
     @Override
@@ -53,20 +54,22 @@ public class UsbDriver extends TpmsDriver {
             return false;
         }
 
-        //对串口设备进行初始化操作
-        if (!mDriver.UartInit()) {
-            Log.e(TAG, "UartInit fail.");
-            return false;
-        }
 
-        //配置串口波特率，函数说明可参照编程手册
-        int baudRate = 9600;
-        byte dataBit = 8;
-        byte stopBit = 1;
-        byte parity = 0;
-        byte flowControl = 0;
-
-        if (!mDriver.SetConfig(baudRate, dataBit, stopBit, parity, flowControl)) {
+        /**
+         * baudRate :01 = 300bps,02 = 600bps,03 = 1200bps,04 = 2400bps,05 = 4800bps,06 =
+         * 9600(default)bps,07 = 14400bps,08 = 19200bps,09 = 28800bps,10 = 38400bps,11 = 57600bps,12 = 76800bps,13 = 115200bps
+         *
+         * dataBits :01 = 5bit data bit,02 = 6bit data bit,03 = 7bit data bit,04 = 8bit data bit(default)
+         *
+         * stopBits :01 = 1bit stop bit(default),02 = 2bit stop bit
+         *
+         * parity :01 = odd,02 = even,03 = space,04 = none(default)
+         */
+        int baudRate = 6;
+        int dataBit = 4;
+        int stopBit = 1;
+        int parity = 4;
+        if (!mDriver.SetConfig(baudRate, dataBit, stopBit, parity)) {
             Log.e(TAG, "SetConfig fail.");
             return false;
         }

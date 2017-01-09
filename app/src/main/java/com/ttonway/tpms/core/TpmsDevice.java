@@ -6,9 +6,8 @@ import android.os.Handler;
 import android.util.Log;
 
 import com.google.common.eventbus.EventBus;
+import com.ttonway.tpms.BuildConfig;
 import com.ttonway.tpms.SPManager;
-import com.ttonway.tpms.bluetooth.BluetoothLeDriver;
-import com.ttonway.tpms.usb.UsbDriver;
 import com.ttonway.tpms.utils.Utils;
 
 import java.util.ArrayList;
@@ -37,6 +36,7 @@ public class TpmsDevice implements DriverCallback {
 
     private static TpmsDevice instance = null;
 
+    Context mContext;
     TpmsDriver mDriver;
     EventBus mEventBus;
     SharedPreferences mPreferences;
@@ -63,7 +63,8 @@ public class TpmsDevice implements DriverCallback {
     }
 
     private TpmsDevice(Context context) {
-        this.mDriver = DriverFactory.newDriver(context, this);
+        this.mContext = context;
+        this.mDriver = DriverFactory.newDriver(mContext, this);
         this.mEventBus = new EventBus();
         this.mPreferences = context.getSharedPreferences("device", Context.MODE_PRIVATE);
 
@@ -74,12 +75,8 @@ public class TpmsDevice implements DriverCallback {
         return mDriver;
     }
 
-    public boolean isBluetoothEnabled() {
-        return mDriver instanceof BluetoothLeDriver;
-    }
-
     public boolean isUSBEnabled() {
-        return mDriver instanceof UsbDriver;
+        return BuildConfig.FLAVOR.equals("usb");
     }
 
     public int getState() {
@@ -142,6 +139,13 @@ public class TpmsDevice implements DriverCallback {
 
     public boolean openDevice() {
         Log.d(TAG, "openDevice");
+
+        if (DriverFactory.needChangeDriver(mContext)) {
+            Log.w(TAG, "change dirver");
+            mDriver.closeDevice();
+            mDriver = DriverFactory.newDriver(mContext, this);
+        }
+
         if (mDriver.openDevice()) {
 //            querySettings();
             mNeedSettings = true;
@@ -286,8 +290,11 @@ public class TpmsDevice implements DriverCallback {
     }
 
     private void querySettings() {
-//        postCommand(new WriteCommand(CMD_QUERY_SETTING, new byte[0], 16000));
-        postCommand(new WriteCommand(CMD_QUERY_SETTING, new byte[0]));
+        if (isUSBEnabled()) {
+            postCommand(new WriteCommand(CMD_QUERY_SETTING, new byte[0], 16000));
+        } else {
+            postCommand(new WriteCommand(CMD_QUERY_SETTING, new byte[0]));
+        }
     }
 
     @Override
