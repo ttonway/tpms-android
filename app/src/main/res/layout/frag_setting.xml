@@ -207,5 +207,13 @@
                 android:textColor="@color/text_green"
                 android:textSize="@dimen/text_normal2" />
         </LinearLayout>
+
+        <TextView
+            android:id="@+id/text_version"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:gravity="center"
+            android:textColor="@color/text_white" />
     </LinearLayout>
 </ScrollView>

@@ -123,7 +123,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
-        if (!BuildConfig.FLAVOR.equals("bluetooth")) {
+        if (!BuildConfig.FLAVOR.startsWith("bluetooth")) {
             mBluetoothDivider.setVisibility(View.GONE);
             mBluetoothBox.setVisibility(View.GONE);
         }
@@ -203,17 +203,12 @@ public class MainActivity extends AppCompatActivity {
 //                device.querySettings();
             }
         }
-
-        // register foreground receiver to judge app running in background or foreground
-        device.registerReceiver(this);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         Log.d(TAG, "onPause");
-
-        device.unregisterReceiver(this);
 
         if (mErrorDialog != null) {
             mErrorDialog.dismissAllowingStateLoss();
@@ -227,11 +222,7 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
         Log.d(TAG, "onDestroy");
 
-        try {
-            device.unregisterReceiver(this);
-        } catch (Exception e) {
-            Log.e(TAG, "unregister MainActivity fail.", e);
-        }
+        device.unregisterReceiver(this);
 
         BackgroundService.startService(this);
     }

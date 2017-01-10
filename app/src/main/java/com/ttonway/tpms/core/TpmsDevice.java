@@ -76,7 +76,7 @@ public class TpmsDevice implements DriverCallback {
     }
 
     public boolean isUSBEnabled() {
-        return BuildConfig.FLAVOR.equals("usb");
+        return BuildConfig.FLAVOR.startsWith("usb34x") || BuildConfig.FLAVOR.startsWith("usb9326");
     }
 
     public int getState() {
@@ -140,11 +140,11 @@ public class TpmsDevice implements DriverCallback {
     public boolean openDevice() {
         Log.d(TAG, "openDevice");
 
-        if (DriverFactory.needChangeDriver(mContext)) {
-            Log.w(TAG, "change dirver");
-            mDriver.closeDevice();
-            mDriver = DriverFactory.newDriver(mContext, this);
-        }
+//        if (DriverFactory.needChangeDriver(mContext)) {
+//            Log.w(TAG, "change dirver");
+//            mDriver.closeDevice();
+//            mDriver = DriverFactory.newDriver(mContext, this);
+//        }
 
         if (mDriver.openDevice()) {
 //            querySettings();

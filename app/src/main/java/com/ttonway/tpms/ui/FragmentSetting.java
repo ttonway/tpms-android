@@ -3,20 +3,26 @@ package com.ttonway.tpms.ui;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 
 import com.google.common.eventbus.Subscribe;
+import com.ttonway.tpms.BuildConfig;
 import com.ttonway.tpms.R;
 import com.ttonway.tpms.SPManager;
 import com.ttonway.tpms.core.SettingChangeEvent;
 import com.ttonway.tpms.core.TpmsDevice;
 import com.ttonway.tpms.utils.Utils;
+
+import org.w3c.dom.Text;
 
 import java.util.Locale;
 
@@ -44,6 +50,9 @@ public class FragmentSetting extends BaseFragment {
     SeekBar mSeekBarLowerLimit;
     @BindView(R.id.temp_upper_limit)
     SeekBar mSeekBarTempUpperLimit;
+
+    @BindView(R.id.text_version)
+    TextView mVersionTextView;
 
     private Unbinder mUnbinder;
 
@@ -78,6 +87,16 @@ public class FragmentSetting extends BaseFragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mUnbinder = ButterKnife.bind(this, view);
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("Version").append("\n");
+        sb.append("App Version: " + Utils.getAppVersion(getActivity()) + "(" + Utils.getAppVersionCode(getActivity()) + ")").append("\n");
+        sb.append("BuildConfig: {applicationId=" + BuildConfig.APPLICATION_ID + ", buildType=" + BuildConfig.BUILD_TYPE + ", flavor=" + BuildConfig.FLAVOR
+                + ", debug=" + BuildConfig.DEBUG + ", versionName=" + BuildConfig.VERSION_NAME + ", versionCode=" + BuildConfig.VERSION_CODE + "}").append("\n");
+        sb.append("System: {Model=" + Build.MODEL + ", version.sdk=" + Build.VERSION.SDK + ", version.release=" + Build.VERSION.RELEASE + "}").append("\n");
+        DisplayMetrics metrics = getResources().getDisplayMetrics();
+        sb.append("DisplayMetrics: " + metrics);
+        mVersionTextView.setText(sb);
 
         Locale locale = SPManager.getCurrentLocale(getActivity());
         if (Locale.SIMPLIFIED_CHINESE.equals(locale)) {
