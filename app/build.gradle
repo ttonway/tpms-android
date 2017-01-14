@@ -39,37 +39,23 @@ android {
         usb34x {
             applicationId "com.ttonway.tpms"
             minSdkVersion 17
-            versionCode 23
-            versionName "1.6.0"
-        }
-
-        "usb34x-sw600dp" {
-            applicationId "com.ttonway.tpms"
-            minSdkVersion 17
-            versionCode 23
-            versionName "1.6.0"
+            versionCode 25
+            versionName "2.0.0"
         }
 
         usb9326 {
             applicationId "com.ttonway.tpms2"
             minSdkVersion 17
-            versionCode 23
-            versionName "1.6.0"
+            versionCode 25
+            versionName "2.0.0"
         }
 
-        "usb9326-sw600dp" {
-            applicationId "com.ttonway.tpms2"
-            minSdkVersion 17
-            versionCode 23
-            versionName "1.6.0"
-        }
-
-        bluetooth {
-            applicationId "com.ttonway.tpms.bluetooth"
-            minSdkVersion 18
-            versionCode 3
-            versionName "0.0.3"
-        }
+//        bluetooth {
+//            applicationId "com.ttonway.tpms.bluetooth"
+//            minSdkVersion 18
+//            versionCode 3
+//            versionName "0.0.3"
+//        }
     }
 
     buildTypes {
