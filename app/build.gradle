@@ -36,18 +36,18 @@ android {
 
     productFlavors {
 
-        usb34x {
-            applicationId "com.ttonway.tpms"
-            minSdkVersion 17
-            versionCode 25
-            versionName "2.0.0"
-        }
+//        usb34x {
+//            applicationId "com.ttonway.tpms"
+//            minSdkVersion 17
+//            versionCode 25
+//            versionName "2.0.0"
+//        }
 
         usb9326 {
             applicationId "com.ttonway.tpms2"
             minSdkVersion 17
-            versionCode 25
-            versionName "2.0.0"
+            versionCode 26
+            versionName "2.0.1"
         }
 
 //        bluetooth {

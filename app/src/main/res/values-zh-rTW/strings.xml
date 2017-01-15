@@ -8,13 +8,12 @@
     <string name="menu_scan">搜索</string>
     <string name="menu_stop">停止</string>
     <string name="tab_monitor">監控</string>
-    <string name="tab_learn">學習</string>
-    <string name="tab_exchange">交換</string>
+    <string name="tab_learn">ID學習</string>
+    <string name="tab_exchange">輪胎換位</string>
     <string name="tab_setting">設置</string>
     <string name="btn_ok">確定</string>
     <string name="btn_cancel">取消</string>
     <string name="btn_reset">恢復出廠設置</string>
-    <string name="btn_voice">聲音</string>
     <string name="btn_bluetooth">藍牙</string>
     <string name="btn_tire1">左前輪</string>
     <string name="btn_tire2">左後輪</string>
@@ -32,6 +31,11 @@
     <string name="label_pressure_max">壓力報警上限</string>
     <string name="label_pressure_min">壓力報警下限</string>
     <string name="label_temperature_max">溫度報警上限</string>
+    <string name="label_theme">主題</string>
+    <string name="theme_plain">簡潔</string>
+    <string name="theme_star">星空</string>
+    <string name="theme_modern">科技</string>
+    <string name="label_voice">聲音</string>
 
     <string name="alert_message_usb_host_unavailable">您的手機不支持USB HOST，請更換其他手機再試</string>
     <string name="alert_message_usb_io_error">主機連接錯誤</string>

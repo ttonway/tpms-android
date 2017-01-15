@@ -1,9 +1,7 @@
 package com.ttonway.tpms.ui;
 
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.graphics.drawable.DrawableCompat;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
@@ -48,13 +46,6 @@ public class FragmentExchange extends BaseFragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mUnbinder = ButterKnife.bind(this, view);
-
-        for (LinearLayout board : mBoards) {
-            Drawable drawable = board.getBackground();
-            final Drawable wrappedDrawable = DrawableCompat.wrap(drawable);
-            DrawableCompat.setTintList(wrappedDrawable, getResources().getColorStateList(R.color.board_tintcolor));
-            board.setBackgroundDrawable(wrappedDrawable);
-        }
     }
 
     @Override
@@ -79,7 +70,7 @@ public class FragmentExchange extends BaseFragment {
     void selectBoard(LinearLayout board, boolean selected) {
         board.setSelected(selected);
         int index = mBoards.indexOf(board);
-        mImageViews.get(index).setVisibility(selected ? View.VISIBLE : View.GONE);
+        mImageViews.get(index).setVisibility(selected ? View.VISIBLE : View.INVISIBLE);
     }
 
     public void exchangeTire() {

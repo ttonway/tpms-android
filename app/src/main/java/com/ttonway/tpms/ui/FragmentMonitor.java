@@ -1,5 +1,6 @@
 package com.ttonway.tpms.ui;
 
+import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -40,7 +41,7 @@ public class FragmentMonitor extends BaseFragment {
 
     private Unbinder mUnbinder;
 
-    public static final String NO_VALUE = "---";
+    public static final String NO_VALUE = "------";
 
     @Subscribe
     public void onStatusUpdated(final TireStatusUpdatedEvent e) {
@@ -107,17 +108,21 @@ public class FragmentMonitor extends BaseFragment {
         super.onViewCreated(view, savedInstanceState);
         mUnbinder = ButterKnife.bind(this, view);
 
-        for (LinearLayout board : mBoards) {
-            Drawable drawable = board.getBackground();
-            final Drawable wrappedDrawable = DrawableCompat.wrap(drawable);
-            DrawableCompat.setTintList(wrappedDrawable, getResources().getColorStateList(R.color.board_tintcolor));
-            board.setBackgroundDrawable(wrappedDrawable);
-        }
+//        for (LinearLayout board : mBoards) {
+//            Drawable drawable = board.getBackground();
+//            final Drawable wrappedDrawable = DrawableCompat.wrap(drawable);
+//            DrawableCompat.setTintList(wrappedDrawable, getResources().getColorStateList(R.color.board_tintcolor));
+//            board.setBackgroundDrawable(wrappedDrawable);
+//        }
         for (ImageView imageView : mBatteryImageViews) {
             Drawable drawable = imageView.getDrawable();
             final Drawable wrappedDrawable = DrawableCompat.wrap(drawable);
             DrawableCompat.setTintList(wrappedDrawable, getResources().getColorStateList(R.color.board_content_tintcolor));
             imageView.setImageDrawable(wrappedDrawable);
+        }
+        Typeface font = Typeface.createFromAsset(getContext().getAssets(), "fonts/CenturyGothicBold.ttf");
+        for (TextView textView : mPressureTextViews) {
+            textView.setTypeface(font);
         }
 
         getTpmeDevice().registerReceiver(this);

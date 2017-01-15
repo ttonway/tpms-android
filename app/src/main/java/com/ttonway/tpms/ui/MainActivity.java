@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TabHost;
 
@@ -51,8 +52,6 @@ public class MainActivity extends AppCompatActivity {
     Button mLearnBtn;
     @BindView(R.id.btn_exchange)
     Button mExchangeBtn;
-    @BindView(R.id.btn_voice)
-    Button mVoiceBtn;
     @BindView(R.id.btn_setting)
     Button mSettingBtn;
     @BindView(R.id.btn_bluetooth)
@@ -60,11 +59,16 @@ public class MainActivity extends AppCompatActivity {
     @BindView(R.id.progress_bluetooth)
     ProgressBar mBluetoothProgressBar;
 
-    @BindView(R.id.divider_bluetooth)
-    View mBluetoothDivider;
+    @BindView(R.id.menu_container)
+    View mMenuContainer;
+    @BindView(R.id.menu_background)
+    ImageView mMenuBackground;
+
     @BindView(R.id.box_bluetooth)
     FrameLayout mBluetoothBox;
 
+    @BindView(R.id.image_background)
+    ImageView mBackgroundImageView;
     @BindView(android.R.id.tabhost)
     TabHost mTabHost;
     TabManager mTabManager;
@@ -111,6 +115,22 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    public void setThemeImage(int theme) {
+        if (mBackgroundImageView != null) {
+            switch (theme) {
+                case SPManager.THEME_PLAIN:
+                    mBackgroundImageView.setImageResource(R.drawable.background_plain);
+                    break;
+                case SPManager.THEME_STAR:
+                    mBackgroundImageView.setImageResource(R.drawable.background_star);
+                    break;
+                case SPManager.THEME_MODERN:
+                    mBackgroundImageView.setImageResource(R.drawable.background_modern);
+                    break;
+            }
+        }
+    }
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -124,9 +144,9 @@ public class MainActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         if (!BuildConfig.FLAVOR.startsWith("bluetooth")) {
-            mBluetoothDivider.setVisibility(View.GONE);
             mBluetoothBox.setVisibility(View.GONE);
         }
+        setThemeImage(SPManager.getInt(this, SPManager.KEY_THEME, SPManager.THEME_PLAIN));
         initTabHost();
 
         if (getIntent().getBooleanExtra("restart-setting", false)) {
@@ -143,7 +163,6 @@ public class MainActivity extends AppCompatActivity {
         device.registerReceiver(this);
         BackgroundService.startService(this);
 
-        mVoiceBtn.setSelected(SPManager.getBoolean(this, SPManager.KEY_VOICE_OPEN, true));
         refreshBluetoothState();
 
 
@@ -245,19 +264,67 @@ public class MainActivity extends AppCompatActivity {
                     mTabHost.newTabSpec(title).setIndicator(title, icon),
                     TAB_CLS[i], null);
 
-            final int tab = i;
             Button btn = TAB_BUTTON[i];
             final Drawable wrappedDrawable = DrawableCompat.wrap(icon);
             DrawableCompat.setTintList(wrappedDrawable, getResources().getColorStateList(R.color.tab_tintcolor));
             wrappedDrawable.setBounds(0, 0, wrappedDrawable.getIntrinsicWidth(), wrappedDrawable.getIntrinsicHeight());
             btn.setCompoundDrawables(null, wrappedDrawable, null, null);
-            btn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    selectTab(tab);
-                }
-            });
         }
+    }
+
+    @OnClick(R.id.btn_monitor)
+    public void onMonitorClick() {
+        boolean visiable = mMenuContainer.isShown();
+        if (visiable) {
+            mMenuContainer.setVisibility(View.GONE);
+        } else if (mMonitorBtn.isSelected()) {
+            mMenuBackground.setVisibility(View.VISIBLE);
+            mMenuContainer.setVisibility(View.VISIBLE);
+        }
+
+        selectTab(0);
+//        ObjectAnimator animator;
+//        if (visiable) {
+//
+//            animator = ObjectAnimator.ofFloat(mMenuContainer, "translationX", -mMenuContainer.getHeight(), 0);
+//            animator.addListener(new AnimatorListenerAdapter() {
+//
+//                @Override
+//                public void onAnimationStart(Animator animation) {
+//                    mMenuContainer.setVisibility(View.VISIBLE);
+//                }
+//            });
+//        } else {
+//
+//            animator = ObjectAnimator.ofFloat(mMenuContainer, "translationX", 0, -mMenuContainer.getWidth());
+//            animator.addListener(new AnimatorListenerAdapter() {
+//
+//                @Override
+//                public void onAnimationEnd(Animator animation) {
+//                    mMenuContainer.setVisibility(View.INVISIBLE);
+//                }
+//            });
+//        }
+//        animator.setDuration(300);
+//        animator.start();
+    }
+
+    @OnClick(R.id.btn_learn)
+    public void onLearnClick() {
+        mMenuBackground.setVisibility(View.GONE);
+        selectTab(1);
+    }
+
+    @OnClick(R.id.btn_exchange)
+    public void onExchangeClick() {
+        mMenuBackground.setVisibility(View.GONE);
+        selectTab(2);
+    }
+
+    @OnClick(R.id.btn_setting)
+    public void onSettingClick() {
+        mMenuContainer.setVisibility(View.GONE);
+        selectTab(3);
     }
 
     void selectTab(int index) {
@@ -272,13 +339,6 @@ public class MainActivity extends AppCompatActivity {
                 parent.setSelected(false);
             }
         }
-    }
-
-    @OnClick(R.id.btn_voice)
-    void toggleVoice() {
-        boolean open = !mVoiceBtn.isSelected();
-        mVoiceBtn.setSelected(open);
-        SPManager.setBoolean(this, SPManager.KEY_VOICE_OPEN, open);
     }
 
     @OnClick(R.id.box_bluetooth)

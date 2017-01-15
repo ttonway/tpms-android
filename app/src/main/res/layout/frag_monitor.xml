@@ -1,197 +1,205 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/page_car_padding_bottom">
 
-    <com.ttonway.tpms.widget.CarImageView
-        android:id="@+id/image_car"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_centerInParent="true"
-        android:scaleType="fitXY"
-        android:src="@drawable/car" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_marginRight="-3dp"
-        android:layout_toLeftOf="@id/image_car"
-        android:gravity="right"
-        android:orientation="vertical">
-
-        <View
-            android:layout_width="1dp"
-            android:layout_height="0dp"
-            android:layout_weight="1" />
+        <com.ttonway.tpms.widget.CarImageView
+            android:id="@+id/image_car"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"
+            android:scaleType="fitXY"
+            android:src="@drawable/car" />
 
         <LinearLayout
-            android:id="@+id/board1"
-            style="@style/TireBorad"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/left_board"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_toLeftOf="@id/image_car"
+            android:gravity="center_horizontal"
             android:orientation="vertical">
 
-            <ImageView
-                android:id="@+id/battery1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="right"
-                android:paddingBottom="2dp"
-                android:paddingRight="@dimen/battery_padding_right"
-                android:src="@drawable/battery" />
+            <View
+                android:layout_width="1dp"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
 
-            <TextView
-                android:id="@+id/pressure1"
+            <LinearLayout
+                android:id="@+id/board1"
+                style="@style/TireBorad"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="p"
-                android:textColor="@color/board_content_tintcolor"
-                android:textSize="@dimen/text_large" />
+                android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/temperature1"
+                <ImageView
+                    android:id="@+id/battery1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/battery" />
+
+                <TextView
+                    android:id="@+id/pressure1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="p"
+                    android:textColor="@color/board_content_tintcolor2"
+                    android:textSize="@dimen/text_large2"
+                    android:textStyle="bold" />
+
+                <View
+                    android:id="@+id/indicator1"
+                    style="@style/TireBoradIndicator" />
+
+                <TextView
+                    android:id="@+id/temperature1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="temp"
+                    android:textColor="@color/board_content_tintcolor"
+                    android:textSize="@dimen/text_large" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+            <LinearLayout
+                android:id="@+id/board2"
+                style="@style/TireBorad"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="temp"
-                android:textColor="@color/board_content_tintcolor"
-                android:textSize="@dimen/text_large" />
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/battery2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/battery" />
+
+                <TextView
+                    android:id="@+id/pressure2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="p"
+                    android:textColor="@color/board_content_tintcolor2"
+                    android:textSize="@dimen/text_large2"
+                    android:textStyle="bold" />
+
+                <View
+                    android:id="@+id/indicator2"
+                    style="@style/TireBoradIndicator" />
+
+                <TextView
+                    android:id="@+id/temperature2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="temp"
+                    android:textColor="@color/board_content_tintcolor"
+                    android:textSize="@dimen/text_large" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
         </LinearLayout>
-
-        <View
-            android:layout_width="1dp"
-            android:layout_height="0dp"
-            android:layout_weight="1" />
 
         <LinearLayout
-            android:id="@+id/board2"
-            style="@style/TireBorad"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/left_board"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_toRightOf="@id/image_car"
+            android:gravity="center_horizontal"
             android:orientation="vertical">
 
-            <ImageView
-                android:id="@+id/battery2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="right"
-                android:paddingBottom="2dp"
-                android:paddingRight="@dimen/battery_padding_right"
-                android:src="@drawable/battery" />
+            <View
+                android:layout_width="1dp"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
 
-            <TextView
-                android:id="@+id/pressure2"
+            <LinearLayout
+                android:id="@+id/board3"
+                style="@style/TireBorad"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="p"
-                android:textColor="@color/board_content_tintcolor"
-                android:textSize="@dimen/text_large" />
+                android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/temperature2"
+                <ImageView
+                    android:id="@+id/battery3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/battery" />
+
+                <TextView
+                    android:id="@+id/pressure3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="p"
+                    android:textColor="@color/board_content_tintcolor2"
+                    android:textSize="@dimen/text_large2"
+                    android:textStyle="bold" />
+
+                <View
+                    android:id="@+id/indicator3"
+                    style="@style/TireBoradIndicator" />
+
+                <TextView
+                    android:id="@+id/temperature3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="temp"
+                    android:textColor="@color/board_content_tintcolor"
+                    android:textSize="@dimen/text_large" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+            <LinearLayout
+                android:id="@+id/board4"
+                style="@style/TireBorad"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="temp"
-                android:textColor="@color/board_content_tintcolor"
-                android:textSize="@dimen/text_large" />
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/battery4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/battery" />
+
+                <TextView
+                    android:id="@+id/pressure4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="p"
+                    android:textColor="@color/board_content_tintcolor2"
+                    android:textSize="@dimen/text_large2"
+                    android:textStyle="bold" />
+
+                <View
+                    android:id="@+id/indicator4"
+                    style="@style/TireBoradIndicator" />
+
+                <TextView
+                    android:id="@+id/temperature4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="temp"
+                    android:textColor="@color/board_content_tintcolor"
+                    android:textSize="@dimen/text_large" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
         </LinearLayout>
-
-        <View
-            android:layout_width="1dp"
-            android:layout_height="0dp"
-            android:layout_weight="1" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_marginLeft="-3dp"
-        android:layout_toRightOf="@id/image_car"
-        android:gravity="left"
-        android:orientation="vertical">
-
-        <View
-            android:layout_width="1dp"
-            android:layout_height="0dp"
-            android:layout_weight="1" />
-
-        <LinearLayout
-            android:id="@+id/board3"
-            style="@style/TireBorad"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/right_board"
-            android:orientation="vertical">
-
-            <ImageView
-                android:id="@+id/battery3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="right"
-                android:paddingBottom="2dp"
-                android:paddingRight="@dimen/battery_padding_right"
-                android:src="@drawable/battery" />
-
-            <TextView
-                android:id="@+id/pressure3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="p"
-                android:textColor="@color/board_content_tintcolor"
-                android:textSize="@dimen/text_large" />
-
-            <TextView
-                android:id="@+id/temperature3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="temp"
-                android:textColor="@color/board_content_tintcolor"
-                android:textSize="@dimen/text_large" />
-        </LinearLayout>
-
-        <View
-            android:layout_width="1dp"
-            android:layout_height="0dp"
-            android:layout_weight="1" />
-
-        <LinearLayout
-            android:id="@+id/board4"
-            style="@style/TireBorad"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/right_board"
-            android:orientation="vertical">
-
-            <ImageView
-                android:id="@+id/battery4"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="right"
-                android:paddingBottom="2dp"
-                android:paddingRight="@dimen/battery_padding_right"
-                android:src="@drawable/battery" />
-
-            <TextView
-                android:id="@+id/pressure4"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="p"
-                android:textColor="@color/board_content_tintcolor"
-                android:textSize="@dimen/text_large" />
-
-            <TextView
-                android:id="@+id/temperature4"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="temp"
-                android:textColor="@color/board_content_tintcolor"
-                android:textSize="@dimen/text_large" />
-        </LinearLayout>
-
-        <View
-            android:layout_width="1dp"
-            android:layout_height="0dp"
-            android:layout_weight="1" />
-    </LinearLayout>
-</RelativeLayout>
+    </RelativeLayout>
+</FrameLayout>

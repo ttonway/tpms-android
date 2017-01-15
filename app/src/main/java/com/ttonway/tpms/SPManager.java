@@ -18,6 +18,10 @@ public class SPManager {
     public static final int TEMP_UNIT_CELSIUS = 0;
     public static final int TEMP_UNIT_FAHRENHEIT = 1;
 
+    public static final int THEME_PLAIN = 0;
+    public static final int THEME_STAR = 1;
+    public static final int THEME_MODERN = 2;
+
     public static final float PRESSURE_UPPER_LIMIT_MIN = 2.5f;
     public static final float PRESSURE_UPPER_LIMIT_MAX = 4.5f;
     public static final float PRESSURE_UPPER_LIMIT_RANGE = PRESSURE_UPPER_LIMIT_MAX - PRESSURE_UPPER_LIMIT_MIN;
@@ -35,6 +39,7 @@ public class SPManager {
     public static final String KEY_LANGUAGE = "app.language";
     public static final String KEY_PRESSURE_UNIT = "app.pressure-unit";
     public static final String KEY_TEMP_UNIT = "app.temp-unit";
+    public static final String KEY_THEME = "app.theme";
 //    public static final String KEY_PRESSURE_UPPER_LIMIT = "app.pressure-upper-limit";
 //    public static final String KEY_PRESSURE_LOWER_LIMIT = "app.pressure-lower-limit";
 //    public static final String KEY_TEMP_UPPER_LIMIT = "app.temp-upper-limit";

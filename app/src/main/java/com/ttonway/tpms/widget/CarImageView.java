@@ -43,7 +43,7 @@ public class CarImageView extends ImageView {
         super.onMeasure(mMeasureSpec.width, mMeasureSpec.height);
 
         ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) getLayoutParams();
-        int margin = -getMeasuredWidth() * 67 / 342;
+        int margin = -getMeasuredWidth() * 55 / 472;
         if (lp.leftMargin != margin || lp.rightMargin != margin) {
             lp.leftMargin = margin;
             lp.rightMargin = margin;

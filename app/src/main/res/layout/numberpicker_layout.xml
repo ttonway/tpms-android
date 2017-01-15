@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <ImageButton
+        android:id="@+id/btn_minus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/picker_background_left"
+        android:src="@drawable/ic_minus"
+        android:minHeight="@dimen/button_minheight" />
+
+    <TextView
+        android:id="@+id/text_center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:background="@drawable/picker_background_center"
+        android:gravity="center"
+        android:minHeight="@dimen/button_minheight"
+        android:text="hello"
+        android:textColor="@color/text_white"
+        android:textSize="@dimen/text_setting_large" />
+
+    <ImageButton
+        android:id="@+id/btn_add"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/picker_background_right"
+        android:src="@drawable/ic_add"
+        android:minHeight="@dimen/button_minheight" />
+</merge>

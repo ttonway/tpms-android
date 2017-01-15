@@ -1,11 +1,14 @@
 package com.ttonway.tpms.ui;
 
+import android.graphics.Paint;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.google.common.eventbus.Subscribe;
 import com.ttonway.tpms.R;
@@ -30,6 +33,8 @@ public class FragmentLearn extends BaseFragment {
 
     @BindViews({R.id.board1, R.id.board3, R.id.board4, R.id.board2})
     List<LinearLayout> mBoards;
+    @BindViews({R.id.text1, R.id.text2, R.id.text4, R.id.text3})
+    List<TextView> mTextViews;
     private Unbinder mUnbinder;
 
     byte mMatchingTire = TpmsDevice.TIRE_NONE;
