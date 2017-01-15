@@ -46,8 +46,8 @@ android {
         usb9326 {
             applicationId "com.ttonway.tpms2"
             minSdkVersion 17
-            versionCode 26
-            versionName "2.0.1"
+            versionCode 27
+            versionName "2.0.2"
         }
 
 //        bluetooth {
