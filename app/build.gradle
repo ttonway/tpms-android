@@ -50,12 +50,12 @@ android {
             versionName "2.0.2"
         }
 
-//        bluetooth {
-//            applicationId "com.ttonway.tpms.bluetooth"
-//            minSdkVersion 18
-//            versionCode 3
-//            versionName "0.0.3"
-//        }
+        bluetooth {
+            applicationId "com.ttonway.tpms.bluetooth"
+            minSdkVersion 18
+            versionCode 34
+            versionName "0.0.4"
+        }
     }
 
     buildTypes {

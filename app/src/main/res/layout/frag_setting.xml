@@ -8,235 +8,204 @@
     android:paddingRight="@dimen/page_setting_padding2"
     android:paddingTop="@dimen/page_setting_padding1">
 
-    <LinearLayout
+    <TableLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="16dp">
+        android:shrinkColumns="1"
+        android:stretchColumns="1">
 
-        <RadioGroup
-            android:id="@+id/group_voice"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
+        <TableRow>
 
             <TextView
                 style="@style/SettingLabel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
                 android:text="@string/label_voice" />
 
-            <RadioButton
-                android:id="@+id/voice_open"
-                style="@style/RadioButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:drawableTop="@drawable/ic_voice_on"
-                android:textSize="0sp" />
+            <com.ttonway.tpms.widget.FlowRadioGroup
+                android:id="@+id/group_voice"
+                android:orientation="horizontal">
 
-            <RadioButton
-                android:id="@+id/voice_close"
-                style="@style/RadioButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:drawableTop="@drawable/ic_voice_off"
-                android:textSize="0sp" />
-        </RadioGroup>
+                <RadioButton
+                    android:id="@+id/voice_open"
+                    style="@style/RadioButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawableTop="@drawable/ic_voice_on"
+                    android:textSize="0sp" />
 
-        <RadioGroup
-            android:id="@+id/group_language"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
+                <RadioButton
+                    android:id="@+id/voice_close"
+                    style="@style/RadioButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawableTop="@drawable/ic_voice_off"
+                    android:textSize="0sp" />
+            </com.ttonway.tpms.widget.FlowRadioGroup>
+        </TableRow>
+
+        <TableRow>
 
             <TextView
                 style="@style/SettingLabel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
                 android:text="@string/label_language" />
 
-            <RadioButton
-                android:id="@+id/language_simplified_chinese"
-                style="@style/RadioButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/language_simplified_chinese" />
+            <com.ttonway.tpms.widget.FlowRadioGroup
+                android:id="@+id/group_language"
+                android:orientation="horizontal">
 
-            <RadioButton
-                android:id="@+id/language_traditional_chinese"
-                style="@style/RadioButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/language_traditional_chinese" />
+                <RadioButton
+                    android:id="@+id/language_simplified_chinese"
+                    style="@style/RadioButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/language_simplified_chinese" />
 
-            <RadioButton
-                android:id="@+id/language_english"
-                style="@style/RadioButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/language_english" />
-        </RadioGroup>
+                <RadioButton
+                    android:id="@+id/language_traditional_chinese"
+                    style="@style/RadioButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/language_traditional_chinese" />
 
-        <RadioGroup
-            android:id="@+id/group_pressure_unit"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
+                <RadioButton
+                    android:id="@+id/language_english"
+                    style="@style/RadioButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/language_english" />
+            </com.ttonway.tpms.widget.FlowRadioGroup>
+        </TableRow>
+
+        <TableRow>
 
             <TextView
                 style="@style/SettingLabel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
                 android:text="@string/label_unit" />
 
-            <RadioButton
-                android:id="@+id/unit_bar"
-                style="@style/RadioButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/unit_bar" />
+            <com.ttonway.tpms.widget.FlowRadioGroup
+                android:id="@+id/group_pressure_unit"
+                android:orientation="horizontal">
 
-            <RadioButton
-                android:id="@+id/unit_psi"
-                style="@style/RadioButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/unit_psi" />
+                <RadioButton
+                    android:id="@+id/unit_bar"
+                    style="@style/RadioButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/unit_bar" />
 
-            <RadioButton
-                android:id="@+id/unit_kpa"
-                style="@style/RadioButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/unit_kpa" />
+                <RadioButton
+                    android:id="@+id/unit_psi"
+                    style="@style/RadioButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/unit_psi" />
 
-            <RadioButton
-                android:id="@+id/unit_kg"
-                style="@style/RadioButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/unit_kg" />
-        </RadioGroup>
+                <RadioButton
+                    android:id="@+id/unit_kpa"
+                    style="@style/RadioButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/unit_kpa" />
 
-        <RadioGroup
-            android:id="@+id/group_temp_unit"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
+                <RadioButton
+                    android:id="@+id/unit_kg"
+                    style="@style/RadioButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/unit_kg" />
+            </com.ttonway.tpms.widget.FlowRadioGroup>
+        </TableRow>
+
+        <TableRow>
 
             <TextView
                 style="@style/SettingLabel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
                 android:text="@string/label_degree" />
 
-            <RadioButton
-                android:id="@+id/degree_celsius"
-                style="@style/RadioButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/degree_celsius" />
+            <com.ttonway.tpms.widget.FlowRadioGroup
+                android:id="@+id/group_temp_unit"
+                android:orientation="horizontal">
 
-            <RadioButton
-                android:id="@+id/degree_fahrenheit"
-                style="@style/RadioButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/degree_fahrenheit" />
-        </RadioGroup>
+                <RadioButton
+                    android:id="@+id/degree_celsius"
+                    style="@style/RadioButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/degree_celsius" />
 
-        <RadioGroup
-            android:id="@+id/group_theme"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
+                <RadioButton
+                    android:id="@+id/degree_fahrenheit"
+                    style="@style/RadioButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/degree_fahrenheit" />
+            </com.ttonway.tpms.widget.FlowRadioGroup>
+        </TableRow>
+
+        <TableRow>
 
             <TextView
                 style="@style/SettingLabel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
                 android:text="@string/label_theme" />
 
-            <RadioButton
-                android:id="@+id/theme_plain"
-                style="@style/RadioButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/theme_plain" />
+            <com.ttonway.tpms.widget.FlowRadioGroup
+                android:id="@+id/group_theme"
+                android:orientation="horizontal">
 
-            <RadioButton
-                android:id="@+id/theme_star"
-                style="@style/RadioButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/theme_star" />
+                <RadioButton
+                    android:id="@+id/theme_plain"
+                    style="@style/RadioButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/theme_plain" />
 
-            <RadioButton
-                android:id="@+id/theme_modern"
-                style="@style/RadioButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/theme_modern" />
-        </RadioGroup>
+                <RadioButton
+                    android:id="@+id/theme_star"
+                    style="@style/RadioButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/theme_star" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical">
+                <RadioButton
+                    android:id="@+id/theme_modern"
+                    style="@style/RadioButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/theme_modern" />
+            </com.ttonway.tpms.widget.FlowRadioGroup>
+        </TableRow>
+
+        <TableRow android:gravity="center_vertical">
 
             <TextView
                 style="@style/SettingLabel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
                 android:text="@string/label_pressure_max" />
 
             <com.ttonway.tpms.widget.MyNumberPicker
                 android:id="@+id/pressure_upper_limit"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
                 android:layout_margin="@dimen/setting_margin_half" />
-        </LinearLayout>
+        </TableRow>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical">
+        <TableRow android:gravity="center_vertical">
 
             <TextView
                 style="@style/SettingLabel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
                 android:text="@string/label_pressure_min" />
 
             <com.ttonway.tpms.widget.MyNumberPicker
                 android:id="@+id/pressure_lower_limit"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
                 android:layout_margin="@dimen/setting_margin_half" />
-        </LinearLayout>
+        </TableRow>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical">
+        <TableRow android:gravity="center_vertical">
 
             <TextView
                 style="@style/SettingLabel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
                 android:text="@string/label_temperature_max" />
 
             <com.ttonway.tpms.widget.MyNumberPicker
                 android:id="@+id/temp_upper_limit"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
                 android:layout_margin="@dimen/setting_margin_half" />
-        </LinearLayout>
+        </TableRow>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -266,5 +235,5 @@
             android:gravity="center"
             android:textAppearance="?android:textAppearanceSmall"
             android:textColor="@color/text_white" />
-    </LinearLayout>
+    </TableLayout>
 </ScrollView>

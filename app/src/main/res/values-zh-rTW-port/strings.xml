@@ -1,0 +1,5 @@
+<resources>
+    <string name="label_pressure_max">壓力報警\n上限</string>
+    <string name="label_pressure_min">壓力報警\n下限</string>
+    <string name="label_temperature_max">溫度報警\n上限</string>
+</resources>

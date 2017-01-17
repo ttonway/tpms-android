@@ -4,10 +4,11 @@
     <string name="ble_not_supported">該設備不支持BLE</string>
     <string name="error_bluetooth_not_supported">藍牙不可用</string>
 
+    <string name="activity_main">胎壓監測</string>
     <string name="activity_scan">設備搜索</string>
     <string name="menu_scan">搜索</string>
     <string name="menu_stop">停止</string>
-    <string name="tab_monitor">監控</string>
+    <string name="tab_monitor">功能</string>
     <string name="tab_learn">ID學習</string>
     <string name="tab_exchange">輪胎換位</string>
     <string name="tab_setting">設置</string>

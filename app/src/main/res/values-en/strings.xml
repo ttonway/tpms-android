@@ -4,10 +4,11 @@
     <string name="ble_not_supported">BLE is not supported</string>
     <string name="error_bluetooth_not_supported">Bluetooth not supported.</string>
 
+    <string name="activity_main">TPMS</string>
     <string name="activity_scan">Scan device</string>
     <string name="menu_scan">Scan</string>
     <string name="menu_stop">Stop</string>
-    <string name="tab_monitor">Monitor</string>
+    <string name="tab_monitor">Function</string>
     <string name="tab_learn">ID Match</string>
     <string name="tab_exchange">Tire Exchange</string>
     <string name="tab_setting">Setting</string>

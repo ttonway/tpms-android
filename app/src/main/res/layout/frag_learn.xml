@@ -2,6 +2,7 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:paddingTop="@dimen/page_car_padding_top"
     android:paddingBottom="@dimen/page_car_padding_bottom">
 
     <RelativeLayout
@@ -41,7 +42,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/btn_tire1_match"
                     android:textColor="@color/board_content_tintcolor"
-                    android:textSize="@dimen/text_large"
+                    android:textSize="@dimen/text_learn"
                     android:textStyle="bold" />
 
                 <View
@@ -67,7 +68,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/btn_tire2_match"
                     android:textColor="@color/board_content_tintcolor"
-                    android:textSize="@dimen/text_large"
+                    android:textSize="@dimen/text_learn"
                     android:textStyle="bold" />
 
                 <View
@@ -106,7 +107,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/btn_tire3_match"
                     android:textColor="@color/board_content_tintcolor"
-                    android:textSize="@dimen/text_large"
+                    android:textSize="@dimen/text_learn"
                     android:textStyle="bold" />
 
                 <View
@@ -132,7 +133,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/btn_tire4_match"
                     android:textColor="@color/board_content_tintcolor"
-                    android:textSize="@dimen/text_large"
+                    android:textSize="@dimen/text_learn"
                     android:textStyle="bold" />
 
                 <View

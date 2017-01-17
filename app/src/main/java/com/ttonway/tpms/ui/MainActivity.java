@@ -1,6 +1,7 @@
 package com.ttonway.tpms.ui;
 
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -39,6 +40,7 @@ import butterknife.OnClick;
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = MainActivity.class.getSimpleName();
 
+    private static final String STATE_TAB = "MainActivity:tab";
 
     static final Class<?>[] TAB_CLS = new Class[]{FragmentMonitor.class, FragmentLearn.class, FragmentExchange.class, FragmentSetting.class};
     static String[] TAB_TAGS = new String[]{"tab-1", "tab-2", "tab-3", "tab-4"};
@@ -59,9 +61,7 @@ public class MainActivity extends AppCompatActivity {
     @BindView(R.id.progress_bluetooth)
     ProgressBar mBluetoothProgressBar;
 
-    @BindView(R.id.menu_container)
     View mMenuContainer;
-    @BindView(R.id.menu_background)
     ImageView mMenuBackground;
 
     @BindView(R.id.box_bluetooth)
@@ -142,6 +142,8 @@ public class MainActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+        mMenuContainer = findViewById(R.id.menu_container);
+        mMenuBackground = (ImageView) findViewById(R.id.menu_background);
 
         if (!BuildConfig.FLAVOR.startsWith("bluetooth")) {
             mBluetoothBox.setVisibility(View.GONE);
@@ -149,17 +151,21 @@ public class MainActivity extends AppCompatActivity {
         setThemeImage(SPManager.getInt(this, SPManager.KEY_THEME, SPManager.THEME_PLAIN));
         initTabHost();
 
+        int tab = 0;
         if (getIntent().getBooleanExtra("restart-setting", false)) {
-            selectTab(3);
-        } else {
-            selectTab(0);
+            tab = 3;
         }
+        if (savedInstanceState != null) {
+            tab = savedInstanceState.getInt(STATE_TAB, tab);
+        }
+        selectTab(tab);
+
 
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);// 保持常亮的屏幕的状态
 //        WindowManager.LayoutParams lp = getWindow().getAttributes();
 //        lp.screenBrightness = 0;
 //        getWindow().setAttributes(lp);
-        initTpmsDevice();
+        initTpmsDevice(savedInstanceState == null);
         device.registerReceiver(this);
         BackgroundService.startService(this);
 
@@ -167,6 +173,12 @@ public class MainActivity extends AppCompatActivity {
 
 
 //        new TTSUtils(this);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putInt(STATE_TAB, mTabHost.getCurrentTab());
+        super.onSaveInstanceState(outState);
     }
 
     void refreshBluetoothState() {
@@ -189,15 +201,17 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    void initTpmsDevice() {
+    void initTpmsDevice(boolean showAlert) {
         device = TpmsDevice.getInstance(this);
         String error = device.getTpmsDriver().isDriverSupported();
         if (error != null) {
-            DialogAlert.showDialog(getSupportFragmentManager(), error);
+            if (showAlert) {
+                DialogAlert.showDialog(getSupportFragmentManager(), error);
+            }
         } else {
             if (device.openDevice()) {
 //                device.querySettings();
-            } else {
+            } else if (showAlert) {
                 if (mErrorDialog != null) {
                     mErrorDialog.dismissAllowingStateLoss();
                     mErrorDialog = null;
@@ -246,6 +260,12 @@ public class MainActivity extends AppCompatActivity {
         BackgroundService.startService(this);
     }
 
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        Log.d(TAG, "onConfigurationChanged " + newConfig);
+    }
+
     private void initTabHost() {
         mTabHost.setup();
 
@@ -265,7 +285,7 @@ public class MainActivity extends AppCompatActivity {
                     TAB_CLS[i], null);
 
             Button btn = TAB_BUTTON[i];
-            final Drawable wrappedDrawable = DrawableCompat.wrap(icon);
+            final Drawable wrappedDrawable = DrawableCompat.wrap(btn.getCompoundDrawables()[1]);
             DrawableCompat.setTintList(wrappedDrawable, getResources().getColorStateList(R.color.tab_tintcolor));
             wrappedDrawable.setBounds(0, 0, wrappedDrawable.getIntrinsicWidth(), wrappedDrawable.getIntrinsicHeight());
             btn.setCompoundDrawables(null, wrappedDrawable, null, null);
@@ -274,12 +294,15 @@ public class MainActivity extends AppCompatActivity {
 
     @OnClick(R.id.btn_monitor)
     public void onMonitorClick() {
-        boolean visiable = mMenuContainer.isShown();
+        boolean visiable = mLearnBtn.isShown() && mExchangeBtn.isShown();
+        Log.d(TAG, "buttons visiable? " + visiable);
         if (visiable) {
-            mMenuContainer.setVisibility(View.GONE);
+            setButtonMenuVisibility(View.GONE);
         } else if (mMonitorBtn.isSelected()) {
-            mMenuBackground.setVisibility(View.VISIBLE);
-            mMenuContainer.setVisibility(View.VISIBLE);
+            if (mMenuBackground != null) {
+                mMenuBackground.setVisibility(View.VISIBLE);
+            }
+            setButtonMenuVisibility(View.VISIBLE);
         }
 
         selectTab(0);
@@ -311,20 +334,36 @@ public class MainActivity extends AppCompatActivity {
 
     @OnClick(R.id.btn_learn)
     public void onLearnClick() {
-        mMenuBackground.setVisibility(View.GONE);
+        if (mMenuBackground != null) {
+            mMenuBackground.setVisibility(View.GONE);
+        }
         selectTab(1);
     }
 
     @OnClick(R.id.btn_exchange)
     public void onExchangeClick() {
-        mMenuBackground.setVisibility(View.GONE);
+        if (mMenuBackground != null) {
+            mMenuBackground.setVisibility(View.GONE);
+        }
         selectTab(2);
     }
 
     @OnClick(R.id.btn_setting)
     public void onSettingClick() {
-        mMenuContainer.setVisibility(View.GONE);
+        setButtonMenuVisibility(View.GONE);
+
         selectTab(3);
+    }
+
+    void setButtonMenuVisibility(int visibility) {
+        if (mMenuContainer != null) {
+            mMenuContainer.setVisibility(visibility);
+        } else {
+            FrameLayout parent1 = (FrameLayout) mLearnBtn.getParent();
+            FrameLayout parent2 = (FrameLayout) mExchangeBtn.getParent();
+            parent1.setVisibility(visibility);
+            parent2.setVisibility(visibility);
+        }
     }
 
     void selectTab(int index) {
