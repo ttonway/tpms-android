@@ -43,7 +43,6 @@ public class TpmsDevice implements DriverCallback {
 
     Handler mHandler = new Handler();
     boolean mHasError = false;
-    boolean mNeedSettings = false;
 
     final List<WriteCommand> mCommands = new ArrayList<>();
 
@@ -148,7 +147,6 @@ public class TpmsDevice implements DriverCallback {
 
         if (mDriver.openDevice()) {
 //            querySettings();
-            mNeedSettings = true;
 
             mHasError = false;
 
@@ -292,7 +290,8 @@ public class TpmsDevice implements DriverCallback {
     private void querySettings() {
         if (isUSBEnabled()) {
             postCommand(new WriteCommand(CMD_QUERY_SETTING, new byte[0], 16000));
-        } else {
+        } else if (BuildConfig.FLAVOR.startsWith("bluetooth")) {
+//            removeCommands(CMD_QUERY_SETTING, new byte[0]);
             postCommand(new WriteCommand(CMD_QUERY_SETTING, new byte[0]));
         }
     }
@@ -304,10 +303,7 @@ public class TpmsDevice implements DriverCallback {
             case TpmsDriver.STATE_OPEN:
                 s = "OPEN";
 
-                if (mNeedSettings) {
-                    querySettings();
-                    mNeedSettings = false;
-                }
+                querySettings();
                 break;
             case TpmsDriver.STATE_OPENING:
                 s = "OPENING";
@@ -502,27 +498,26 @@ public class TpmsDevice implements DriverCallback {
                     return;
                 }
             }
-
-//            if (this.command == CMD_QUERY_SETTING) {
-//                tryCount++;
-//                writeData(this.command, this.data);
-//                mHandler.postDelayed(this, delay);
-//                if (tryCount > 1) {
-//                    mEventBus.post(new ErrorEvent(this.command));
+//            else if (BuildConfig.FLAVOR.startsWith("bluetooth")) {
+//                if (this.command == CMD_QUERY_SETTING) {
+//                    tryCount++;
+//                    if (!writeData(this.command, this.data)) {
+//                        Log.e(TAG, "writeData fail.");
+//                    }
+//                    mHandler.postDelayed(this, delay);
+//                    if (tryCount >= 3) {
+//                        mEventBus.post(new ErrorEvent(this.command));
+//                    }
+//                    return;
 //                }
-//                return;
 //            }
 
             if (tryCount < 3) {
                 tryCount++;
-                if (writeData(this.command, this.data)) {
-                    mHandler.postDelayed(this, delay);
-                } else {
+                if (!writeData(this.command, this.data)) {
                     Log.e(TAG, "writeData fail.");
-//                    removeCommand(this);
-//                    mEventBus.post(new ErrorEvent());
-                    mHandler.postDelayed(this, delay);
                 }
+                mHandler.postDelayed(this, delay);
             } else {
                 removeCommand(this);
                 mHasError = true;

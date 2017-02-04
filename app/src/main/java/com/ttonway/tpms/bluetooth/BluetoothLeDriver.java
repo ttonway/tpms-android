@@ -1,19 +1,3 @@
-/*
- * Copyright (C) 2013 The Android Open Source Project
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package com.ttonway.tpms.bluetooth;
 
 import android.bluetooth.BluetoothAdapter;
@@ -55,12 +39,12 @@ public class BluetoothLeDriver extends TpmsDriver {
     private boolean mNotifyEnabled;
 
     private Handler mHandler;
-    private final Runnable mConnTimeoutCheckTask = new Runnable() {
-        @Override
-        public void run() {
-            mCallback.onError(TpmsDriver.ERROR_CONNECTION_FAIL);
-        }
-    };
+//    private final Runnable mConnTimeoutCheckTask = new Runnable() {
+//        @Override
+//        public void run() {
+//            mCallback.onError(TpmsDriver.ERROR_CONNECTION_FAIL);
+//        }
+//    };
 
     // Implements callback methods for GATT events that the app cares about.  For example,
     // connection change and services discovered.
@@ -73,7 +57,7 @@ public class BluetoothLeDriver extends TpmsDriver {
                 Log.i(TAG, "Attempting to start service discovery:" +
                         mBluetoothGatt.discoverServices());
 
-                mHandler.removeCallbacks(mConnTimeoutCheckTask);
+//                mHandler.removeCallbacks(mConnTimeoutCheckTask);
 
             } else if (newState == BluetoothProfile.STATE_DISCONNECTED) {
                 Log.i(TAG, "Disconnected from GATT server.");
@@ -217,8 +201,8 @@ public class BluetoothLeDriver extends TpmsDriver {
             if (mBluetoothGatt.connect()) {
                 setState(STATE_OPENING);
 
-                mHandler.removeCallbacks(mConnTimeoutCheckTask);
-                mHandler.postDelayed(mConnTimeoutCheckTask, 10000);
+//                mHandler.removeCallbacks(mConnTimeoutCheckTask);
+//                mHandler.postDelayed(mConnTimeoutCheckTask, 10000);
                 return true;
             } else {
                 Log.e(TAG, "connect fail, close GATT.");
@@ -234,12 +218,12 @@ public class BluetoothLeDriver extends TpmsDriver {
         }
         // We want to directly connect to the device, so we are setting the autoConnect
         // parameter to false.
-        mBluetoothGatt = device.connectGatt(mContext, false, mGattCallback);
+        mBluetoothGatt = device.connectGatt(mContext, true, mGattCallback);
         Log.d(TAG, "Trying to create a new connection. " + mBluetoothGatt);
         setState(STATE_OPENING);
 
-        mHandler.removeCallbacks(mConnTimeoutCheckTask);
-        mHandler.postDelayed(mConnTimeoutCheckTask, 10000);
+//        mHandler.removeCallbacks(mConnTimeoutCheckTask);
+//        mHandler.postDelayed(mConnTimeoutCheckTask, 10000);
         return true;
     }
 

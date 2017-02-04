@@ -25,6 +25,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -36,6 +37,7 @@ import android.widget.Toast;
 import com.ttonway.tpms.R;
 import com.ttonway.tpms.bluetooth.BluetoothLeDriver;
 import com.ttonway.tpms.core.TpmsDevice;
+import com.ttonway.tpms.core.TpmsDriver;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -44,7 +46,7 @@ import butterknife.ButterKnife;
  * Activity for scanning and displaying available Bluetooth LE devices.
  */
 public class DeviceScanActivity extends AppCompatActivity
-implements  AdapterView.OnItemClickListener {
+        implements AdapterView.OnItemClickListener {
     private LeDeviceListAdapter mLeDeviceListAdapter;
     private BluetoothAdapter mBluetoothAdapter;
     private boolean mScanning;
@@ -89,8 +91,13 @@ implements  AdapterView.OnItemClickListener {
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        BluetoothDevice device = (BluetoothDevice)parent.getItemAtPosition(position);
+        BluetoothDevice device = (BluetoothDevice) parent.getItemAtPosition(position);
         if (device != null) {
+            if (!TextUtils.equals(mLeDriver.getBluetoothDeviceAddress(), device.getAddress())) {
+                if (TpmsDevice.getInstance(this).getState() != TpmsDriver.STATE_CLOSE) {
+                    TpmsDevice.getInstance(this).closeDevice();
+                }
+            }
             mLeDriver.openDevice(device.getAddress());
             mLeDeviceListAdapter.notifyDataSetChanged();
         }
