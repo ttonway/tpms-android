@@ -197,18 +197,20 @@ public class BluetoothLeDriver extends TpmsDriver {
 
         // Previously connected device.  Try to reconnect.
         if (mBluetoothDeviceAddress != null && mBluetoothGatt != null) {
-            Log.d(TAG, "Trying to use an existing mBluetoothGatt for connection.");
-            if (mBluetoothGatt.connect()) {
-                setState(STATE_OPENING);
-
-//                mHandler.removeCallbacks(mConnTimeoutCheckTask);
-//                mHandler.postDelayed(mConnTimeoutCheckTask, 10000);
-                return true;
-            } else {
-                Log.e(TAG, "connect fail, close GATT.");
-                closeDevice();
-                return false;
-            }
+            Log.d(TAG, "The mBluetoothGatt exist for connection.");
+            return true;
+//            Log.d(TAG, "Trying to use an existing mBluetoothGatt for connection.");
+//            if (mBluetoothGatt.connect()) {
+//                setState(STATE_OPENING);
+//
+////                mHandler.removeCallbacks(mConnTimeoutCheckTask);
+////                mHandler.postDelayed(mConnTimeoutCheckTask, 10000);
+//                return true;
+//            } else {
+//                Log.e(TAG, "connect fail, close GATT.");
+//                closeDevice();
+//                return false;
+//            }
         }
 
         final BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(mBluetoothDeviceAddress);
