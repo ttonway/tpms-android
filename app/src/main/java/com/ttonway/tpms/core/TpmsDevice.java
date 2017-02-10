@@ -68,6 +68,24 @@ public class TpmsDevice implements DriverCallback {
         this.mPreferences = context.getSharedPreferences("device", Context.MODE_PRIVATE);
 
         initData();
+
+//        mLeftFront.inited = true;
+//        mLeftFront.battery = 2700;
+//        mLeftFront.temperature = 28;
+//        mLeftFront.pressure = 2.5f;
+//        mLeftEnd.inited = true;
+//        mLeftEnd.battery = 2700;
+//        mLeftEnd.temperature = 28;
+//        mLeftEnd.pressure = 3.0f;
+//        mLeftEnd.pressureStatus = TireStatus.PRESSURE_HIGH;
+//        mRightFront.inited = true;
+//        mRightFront.battery = 2700;
+//        mRightFront.temperature = 28;
+//        mRightFront.pressure = 2.5f;
+//        mRightEnd.inited = true;
+//        mRightEnd.battery = 2700;
+//        mRightEnd.temperature = 28;
+//        mRightEnd.pressure = 2.5f;
     }
 
     public TpmsDriver getTpmsDriver() {
@@ -443,6 +461,7 @@ public class TpmsDevice implements DriverCallback {
                 mPressureHighLimit = 0.1f * (int) data[1];
                 mTemperatureLimit = (int) data[2];
                 removeCommands(CMD_QUERY_SETTING, new byte[0]);
+                //TODO should be removed for bluetooth flavor
                 mHandler.post(new Runnable() {
                     @Override
                     public void run() {
