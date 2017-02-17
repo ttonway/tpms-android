@@ -46,28 +46,33 @@ public class CH34xUsbDriver extends TpmsDriver {
             return true;
         }
 
-        // ResumeUsbList方法用于枚举CH34X设备以及打开相关设备
-        if (!mDriver.ResumeUsbList()) {
-            Log.e(TAG, "ResumeUsbList fail.");
-            mDriver.CloseDevice();
-            return false;
-        }
+        try {
+            // ResumeUsbList方法用于枚举CH34X设备以及打开相关设备
+            if (!mDriver.ResumeUsbList()) {
+                Log.e(TAG, "ResumeUsbList fail.");
+                mDriver.CloseDevice();
+                return false;
+            }
 
-        //对串口设备进行初始化操作
-        if (!mDriver.UartInit()) {
-            Log.e(TAG, "UartInit fail.");
-            return false;
-        }
+            //对串口设备进行初始化操作
+            if (!mDriver.UartInit()) {
+                Log.e(TAG, "UartInit fail.");
+                return false;
+            }
 
-        //配置串口波特率，函数说明可参照编程手册
-        int baudRate = 9600;
-        byte dataBit = 8;
-        byte stopBit = 1;
-        byte parity = 0;
-        byte flowControl = 0;
+            //配置串口波特率，函数说明可参照编程手册
+            int baudRate = 9600;
+            byte dataBit = 8;
+            byte stopBit = 1;
+            byte parity = 0;
+            byte flowControl = 0;
 
-        if (!mDriver.SetConfig(baudRate, dataBit, stopBit, parity, flowControl)) {
-            Log.e(TAG, "SetConfig fail.");
+            if (!mDriver.SetConfig(baudRate, dataBit, stopBit, parity, flowControl)) {
+                Log.e(TAG, "SetConfig fail.");
+                return false;
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "openDevice fail.", e);
             return false;
         }
 

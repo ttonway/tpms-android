@@ -47,30 +47,35 @@ public class CH9326UsbDriver extends TpmsDriver {
             return true;
         }
 
-        // ResumeUsbList方法用于枚举CH34X设备以及打开相关设备
-        if (!mDriver.ResumeUsbList()) {
-            Log.e(TAG, "ResumeUsbList fail.");
-            mDriver.CloseDevice();
-            return false;
-        }
+        try {
+            // ResumeUsbList方法用于枚举CH34X设备以及打开相关设备
+            if (!mDriver.ResumeUsbList()) {
+                Log.e(TAG, "ResumeUsbList fail.");
+                mDriver.CloseDevice();
+                return false;
+            }
 
 
-        /**
-         * baudRate :01 = 300bps,02 = 600bps,03 = 1200bps,04 = 2400bps,05 = 4800bps,06 =
-         * 9600(default)bps,07 = 14400bps,08 = 19200bps,09 = 28800bps,10 = 38400bps,11 = 57600bps,12 = 76800bps,13 = 115200bps
-         *
-         * dataBits :01 = 5bit data bit,02 = 6bit data bit,03 = 7bit data bit,04 = 8bit data bit(default)
-         *
-         * stopBits :01 = 1bit stop bit(default),02 = 2bit stop bit
-         *
-         * parity :01 = odd,02 = even,03 = space,04 = none(default)
-         */
-        int baudRate = 6;
-        int dataBit = 4;
-        int stopBit = 1;
-        int parity = 4;
-        if (!mDriver.SetConfig(baudRate, dataBit, stopBit, parity)) {
-            Log.e(TAG, "SetConfig fail.");
+            /**
+             * baudRate :01 = 300bps,02 = 600bps,03 = 1200bps,04 = 2400bps,05 = 4800bps,06 =
+             * 9600(default)bps,07 = 14400bps,08 = 19200bps,09 = 28800bps,10 = 38400bps,11 = 57600bps,12 = 76800bps,13 = 115200bps
+             *
+             * dataBits :01 = 5bit data bit,02 = 6bit data bit,03 = 7bit data bit,04 = 8bit data bit(default)
+             *
+             * stopBits :01 = 1bit stop bit(default),02 = 2bit stop bit
+             *
+             * parity :01 = odd,02 = even,03 = space,04 = none(default)
+             */
+            int baudRate = 6;
+            int dataBit = 4;
+            int stopBit = 1;
+            int parity = 4;
+            if (!mDriver.SetConfig(baudRate, dataBit, stopBit, parity)) {
+                Log.e(TAG, "SetConfig fail.");
+                return false;
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "openDevice fail.", e);
             return false;
         }
 

@@ -3,6 +3,7 @@ package com.ttonway.tpms.ui;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.drawable.Drawable;
+import android.hardware.usb.UsbManager;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.graphics.drawable.DrawableCompat;
@@ -134,9 +135,15 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d(TAG, "onCreate");
+        Log.d(TAG, "onCreate " + getIntent());
+//        Toast.makeText(this, "onCreate " + getIntent(), Toast.LENGTH_SHORT).show();
 //        DisplayMetrics metrics = getResources().getDisplayMetrics();
 //        Toast.makeText(this, metrics.toString(), Toast.LENGTH_LONG).show();
+
+        if (getIntent() != null && UsbManager.ACTION_USB_DEVICE_ATTACHED.equals(getIntent().getAction())) {
+            finish();
+            return;
+        }
 
         Utils.setupLocale(this);
 
@@ -255,7 +262,9 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
         Log.d(TAG, "onDestroy");
 
-        device.unregisterReceiver(this);
+        if (device != null) {
+            device.unregisterReceiver(this);
+        }
 
         BackgroundService.startService(this);
     }
