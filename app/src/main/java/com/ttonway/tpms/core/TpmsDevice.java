@@ -385,17 +385,22 @@ public class TpmsDevice implements DriverCallback {
                 byte temp = data[2];
                 byte pressure = data[3];
                 byte battery = data[4];
+                float pressureBar = 0.1f * (pressure & 0xFF);
+                if (pressureBar > 8 || pressureBar < 0) {
+                    Log.e(TAG, "Invalid bar value, drop frame.");
+                    break;
+                }
                 TireStatus status = getTireStatus(tire);
                 status.inited = true;
                 status.pressureStatus = alarm & 0x03;
                 status.batteryStatus = (alarm >> 2) & 0x01;
                 status.temperatureStatus = (alarm >> 3) & 0x01;
-                status.pressure = 0.1f * (int) pressure;
-                status.temperature = (int) temp;
+                status.pressure = pressureBar;
+                status.temperature = temp;
                 if (status.temperature > 100) {
                     status.temperature = 0;
                 }
-                status.battery = 100 * (int) battery;
+                status.battery = 100 * (battery & 0xFF);
 
                 writeTireStatus(mPreferences, status);
 
