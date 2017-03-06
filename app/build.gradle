@@ -53,8 +53,8 @@ android {
         bluetooth {
             applicationId "com.ttonway.tpms.bluetooth"
             minSdkVersion 18
-            versionCode 36
-            versionName "0.0.6"
+            versionCode 37
+            versionName "0.0.7"
         }
     }
 

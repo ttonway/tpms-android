@@ -16,14 +16,19 @@
 
 package com.ttonway.tpms.ui;
 
+import android.Manifest;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.Menu;
@@ -53,6 +58,7 @@ public class DeviceScanActivity extends AppCompatActivity
     private Handler mHandler;
 
     private static final int REQUEST_ENABLE_BT = 1;
+    private static final int MY_PERMISSIONS_REQUEST_ACCESS_COARSE_LOCATION = 300;
     // Stops scanning after 10 seconds.
     private static final long SCAN_PERIOD = 10000;
 
@@ -140,18 +146,25 @@ public class DeviceScanActivity extends AppCompatActivity
     protected void onResume() {
         super.onResume();
 
+        // Initializes list view adapter.
+        mLeDeviceListAdapter = new LeDeviceListAdapter(this);
+        mListView.setAdapter(mLeDeviceListAdapter);
+
         // Ensures Bluetooth is enabled on the device.  If Bluetooth is not currently enabled,
         // fire an intent to display a dialog asking the user to grant permission to enable it.
         if (!mBluetoothAdapter.isEnabled()) {
             if (!mBluetoothAdapter.isEnabled()) {
                 Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
                 startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
+                return;
             }
         }
 
-        // Initializes list view adapter.
-        mLeDeviceListAdapter = new LeDeviceListAdapter(this);
-        mListView.setAdapter(mLeDeviceListAdapter);
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, MY_PERMISSIONS_REQUEST_ACCESS_COARSE_LOCATION);
+            return;
+        }
+
         scanLeDevice(true);
     }
 
@@ -163,6 +176,16 @@ public class DeviceScanActivity extends AppCompatActivity
             return;
         }
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == MY_PERMISSIONS_REQUEST_ACCESS_COARSE_LOCATION) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                scanLeDevice(true);
+            }
+        }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
     @Override
