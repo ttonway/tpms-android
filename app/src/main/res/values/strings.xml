@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name" translatable="false">TPMS</string>
+    <string name="app_name">东方胎安</string>
     <string name="language_simplified_chinese" translatable="false">中文简体</string>
     <string name="language_traditional_chinese" translatable="false">中文繁體</string>
     <string name="language_english" translatable="false">English</string>
