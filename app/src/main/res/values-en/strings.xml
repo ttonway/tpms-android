@@ -16,7 +16,6 @@
     <string name="btn_ok">OK</string>
     <string name="btn_cancel">Cancel</string>
     <string name="btn_reset">Reset</string>
-    <string name="btn_voice">Sound</string>
     <string name="btn_bluetooth">Bluetooth</string>
     <string name="btn_tire1">Left Front Wheel</string>
     <string name="btn_tire2">Left End Wheel</string>
@@ -39,12 +38,18 @@
     <string name="theme_star">Star</string>
     <string name="theme_modern">Modern</string>
     <string name="label_voice">Sound</string>
+    <string name="label_leaking">Leak</string>
+    <string name="label_no_signal">No signal</string>
 
     <string name="alert_message_usb_host_unavailable">USB HOST not supported, please try other devices</string>
     <string name="alert_message_usb_io_error">Host IO error</string>
     <string name="alert_message_learn">Mathing %1$s</string>
     <string name="alert_message_exchange">Confirm to exchange %1$s and %2$s</string>
 
+    <string name="alert_message_tire1_leaking">left front wheel leaking</string>
+    <string name="alert_message_tire2_leaking">left end wheel leaking</string>
+    <string name="alert_message_tire3_leaking">right front wheel leaking</string>
+    <string name="alert_message_tire4_leaking">right end wheel leaking</string>
     <string name="alert_message_tire1_pressure_high">left front wheel pressure high</string>
     <string name="alert_message_tire2_pressure_high">left end wheel pressure high</string>
     <string name="alert_message_tire3_pressure_high">right front wheel pressure high</string>

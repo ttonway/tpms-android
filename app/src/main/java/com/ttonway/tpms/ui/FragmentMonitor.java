@@ -67,8 +67,14 @@ public class FragmentMonitor extends BaseFragment {
             ImageView batteryImage = mBatteryImageViews.get(tire);
 
             if (tireStatus == null || !tireStatus.inited) {
-                pressureText.setText(NO_VALUE);
-                pressureText.setSelected(false);
+
+                if (tireStatus.pressureStatus == TireStatus.PRESSURE_NO_SIGNAL) {
+                    pressureText.setText(R.string.label_no_signal);
+                    pressureText.setSelected(true);
+                } else {
+                    pressureText.setText(NO_VALUE);
+                    pressureText.setSelected(false);
+                }
                 tempText.setText(NO_VALUE);
                 tempText.setSelected(false);
                 batteryImage.getDrawable().setLevel(0);
@@ -78,16 +84,23 @@ public class FragmentMonitor extends BaseFragment {
                 board.setSelected(tireStatus.pressureStatus != TireStatus.PRESSURE_NORMAL
                         || tireStatus.temperatureStatus != TireStatus.TEMPERATURE_NORMAL
                         || tireStatus.batteryStatus != TireStatus.BATTERY_NORMAL);
-                pressureText.setText(tireStatus.pressureStatus == TireStatus.PRESSURE_ERROR ?
-                        NO_VALUE : Utils.formatPressure(getActivity(), tireStatus.pressure));
+                if (tireStatus.pressureStatus == TireStatus.PRESSURE_ERROR) {
+                    pressureText.setText(NO_VALUE);
+                } else if (tireStatus.pressureStatus == TireStatus.PRESSURE_LEAKING) {
+                    pressureText.setText(R.string.label_leaking);
+                } else if (tireStatus.pressureStatus == TireStatus.PRESSURE_NO_SIGNAL) {
+                    pressureText.setText(R.string.label_no_signal);
+                } else {
+                    pressureText.setText(Utils.formatPressure(getActivity(), tireStatus.getPressure()));
+                }
                 pressureText.setSelected(tireStatus.pressureStatus != TireStatus.PRESSURE_NORMAL);
-                tempText.setText(Utils.formatTemperature(getActivity(), tireStatus.temperature));
+                tempText.setText(Utils.formatTemperature(getActivity(), tireStatus.getTemperature()));
                 tempText.setSelected(tireStatus.temperatureStatus != TireStatus.TEMPERATURE_NORMAL);
-                if (tireStatus.battery < 2500) {
+                if (tireStatus.getBattery() < 2500) {
                     batteryImage.getDrawable().setLevel(0);
-                } else if (tireStatus.battery < 2700) {
+                } else if (tireStatus.getBattery() < 2700) {
                     batteryImage.getDrawable().setLevel(1);
-                } else if (tireStatus.battery < 2800) {
+                } else if (tireStatus.getBattery() < 2800) {
                     batteryImage.getDrawable().setLevel(2);
                 } else {
                     batteryImage.getDrawable().setLevel(3);

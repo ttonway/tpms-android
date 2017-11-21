@@ -58,6 +58,10 @@ public class AlertHelper {
                 mVoices.add(getRawId(prefix + "pressure_error"));
                 mMessages.add(getStringId(prefix2 + "pressure_error"));
                 break;
+            case TireStatus.PRESSURE_LEAKING:
+                mVoices.add(getRawId(prefix + "leaking"));
+                mMessages.add(getStringId(prefix2 + "leaking"));
+                break;
         }
         if (status.temperatureStatus == TireStatus.TEMPERATURE_HIGH) {
             mVoices.add(getRawId(prefix + "temp_high"));

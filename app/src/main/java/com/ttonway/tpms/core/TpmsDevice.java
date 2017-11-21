@@ -54,6 +54,26 @@ public class TpmsDevice implements DriverCallback {
     public TireStatus mRightEnd = new TireStatus("right-end");
     public TireStatus mLeftEnd = new TireStatus("left-end");
 
+
+    Runnable mCheckNoSignalRunnable = new Runnable() {
+        @Override
+        public void run() {
+            long now = System.currentTimeMillis();
+            boolean changed = false;
+            for (TireStatus ts : new TireStatus[]{mLeftFront, mRightFront, mRightEnd, mLeftEnd}) {
+                if (ts.lastUpdateTime > 0 && now - ts.lastUpdateTime > /* 25min */25 * 60 * 1000) {
+                    ts.pressureStatus = TireStatus.PRESSURE_NO_SIGNAL;
+                    changed = true;
+                }
+            }
+            if (changed) {
+                mEventBus.post(new TireStatusUpdatedEvent(TpmsDevice.TIRE_NONE));
+            }
+
+            mHandler.postDelayed(mCheckNoSignalRunnable, 1000);
+        }
+    };
+
     public static synchronized TpmsDevice getInstance(Context context) {
         if (instance == null) {
             instance = new TpmsDevice(context);
@@ -104,40 +124,10 @@ public class TpmsDevice implements DriverCallback {
         mPressureLowLimit = mPreferences.getFloat("pressure-low-limit", SPManager.PRESSURE_LOWER_LIMIT_DEFAULT);
         mPressureHighLimit = mPreferences.getFloat("pressure-high-limit", SPManager.PRESSURE_UPPER_LIMIT_DEFAULT);
         mTemperatureLimit = mPreferences.getInt("temperature-high-limit", SPManager.TEMP_UPPER_LIMIT_DEFAULT);
-        readTireStatus(mPreferences, mLeftFront);
-        readTireStatus(mPreferences, mRightFront);
-        readTireStatus(mPreferences, mRightEnd);
-        readTireStatus(mPreferences, mLeftEnd);
-    }
-
-    void readTireStatus(SharedPreferences sp, TireStatus status) {
-        String prefix = status.name;
-        if (sp.contains(prefix + "-pressure-status")) {
-            status.inited = true;
-        } else {
-            status.inited = false;
-            return;
-        }
-        status.pressureStatus = sp.getInt(prefix + "-pressure-status", 0);
-        status.batteryStatus = sp.getInt(prefix + "-battery-status", 0);
-        status.temperatureStatus = sp.getInt(prefix + "-temperature-status", 0);
-        status.pressure = sp.getFloat(prefix + "-pressure", 0.f);
-        status.battery = sp.getInt(prefix + "-battery", 0);
-        status.temperature = sp.getInt(prefix + "-temperature", 0);
-    }
-
-    void writeTireStatus(SharedPreferences sp, TireStatus status) {
-        if (status.inited) {
-            String prefix = status.name;
-            sp.edit()
-                    .putInt(prefix + "-pressure-status", status.pressureStatus)
-                    .putInt(prefix + "-battery-status", status.batteryStatus)
-                    .putInt(prefix + "-temperature-status", status.temperatureStatus)
-                    .putFloat(prefix + "-pressure", status.pressure)
-                    .putInt(prefix + "-battery", status.battery)
-                    .putInt(prefix + "-temperature", status.temperature)
-                    .apply();
-        }
+        mLeftFront.readTireStatus(mPreferences);
+        mLeftFront.readTireStatus(mPreferences);
+        mLeftFront.readTireStatus(mPreferences);
+        mLeftFront.readTireStatus(mPreferences);
     }
 
     public void clearData() {
@@ -321,6 +311,14 @@ public class TpmsDevice implements DriverCallback {
             case TpmsDriver.STATE_OPEN:
                 s = "OPEN";
 
+                long now = System.currentTimeMillis();
+                mLeftFront.lastUpdateTime = now;
+                mLeftEnd.lastUpdateTime = now;
+                mRightFront.lastUpdateTime = now;
+                mRightEnd.lastUpdateTime = now;
+                mHandler.removeCallbacks(mCheckNoSignalRunnable);
+                mHandler.postDelayed(mCheckNoSignalRunnable, 1000);
+
                 querySettings();
                 break;
             case TpmsDriver.STATE_OPENING:
@@ -328,6 +326,8 @@ public class TpmsDevice implements DriverCallback {
                 break;
             case TpmsDriver.STATE_CLOSE:
                 s = "CLOSE";
+
+                mHandler.removeCallbacks(mCheckNoSignalRunnable);
                 break;
             case TpmsDriver.STATE_CLOSING:
                 s = "CLOSING";
@@ -395,14 +395,15 @@ public class TpmsDevice implements DriverCallback {
                 status.pressureStatus = alarm & 0x03;
                 status.batteryStatus = (alarm >> 2) & 0x01;
                 status.temperatureStatus = (alarm >> 3) & 0x01;
-                status.pressure = pressureBar;
-                status.temperature = temp;
-                if (status.temperature > 100) {
-                    status.temperature = 0;
+                status.setPressure(pressureBar);
+                status.setTemperature(temp);
+                status.setBattery(100 * (battery & 0xFF));
+                status.lastUpdateTime = System.currentTimeMillis();
+                if (status.isLeaking()) {
+                    status.pressureStatus = TireStatus.PRESSURE_LEAKING;
                 }
-                status.battery = 100 * (battery & 0xFF);
 
-                writeTireStatus(mPreferences, status);
+                status.writeTireStatus(mPreferences);
 
                 mEventBus.post(new TireStatusUpdatedEvent(tire));
                 break;
@@ -438,8 +439,8 @@ public class TpmsDevice implements DriverCallback {
                 status2.setValues(statusTemp);
                 removeCommands(cmd, data);
 
-                writeTireStatus(mPreferences, status1);
-                writeTireStatus(mPreferences, status2);
+                status1.writeTireStatus(mPreferences);
+                status2.writeTireStatus(mPreferences);
 
                 mEventBus.post(new TireStatusUpdatedEvent(TpmsDevice.TIRE_NONE));
                 break;
